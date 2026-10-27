@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="th"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Buddy HomeCare - Home Visit</title>
+<title>INHOMESSS Home Visit</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;600;700&family=Noto+Sans+Myanmar:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
 /* THEME: edit these variables to match your brand/screenshot */
@@ -203,7 +203,7 @@ function login(mode='in',em=''){
  else if(mode=='ver')C(`<h2>ยืนยันอีเมล</h2><p>เราส่งรหัส 6 หลักไปที่</p><b>${esc(em)}</b><br><br>${I('vc','รหัสยืนยัน 6 หลัก')}<button class="p" id="b1">ยืนยัน</button><p><a href="#" id="b3">ส่งรหัสอีกครั้ง</a> · <a href="#" id="b2">กลับ</a></p>`);
  else C(`<h2>เข้าสู่ระบบ</h2>${I('u','อีเมลหรือชื่อผู้ใช้')}${I('pw','รหัสผ่าน','password')}<button class="p" id="b1">เข้าสู่ระบบ</button><p><a href="#" id="b2">สมัครสมาชิกใหม่</a></p>`);
  const act=async(f,msg)=>{busy(1,msg);try{await f()}catch(e){toast(e.message)}busy(0)},v=id=>$('#'+id).value.trim();
- $('#b2').onclick=e=>{e.preventDefault();login(mode=='in'?'up':'in')};M.querySelectorAll('input').forEach(x=>x.onkeydown=e=>e.key=='Enter'&&$('#b1').click());
+ $('#b2').onclick=e=>{e.preventDefault();login(mode=='in'?'up':'in')};M.querySelectorAll('input').forEach(x=>x.addEventListener('keydown',e=>{if(e.key=='Enter')$('#b1').click()}));
  if(mode=='in')$('#b1').onclick=()=>act(async()=>{try{const r=await api('login',{username:v('u'),password:$('#pw').value});S=r;localStorage.tok=r.token;localStorage.usr=JSON.stringify(r.user);location.hash='home';go()}catch(e){if(e.message=='EMAIL_UNVERIFIED'){toast('กรุณายืนยันอีเมลก่อน');login('ver',v('u').toLowerCase())}else throw e}},'กำลังเข้าสู่ระบบ…');
  if(mode=='up')$('#b1').onclick=()=>act(async()=>{if($('#rp').value!=$('#rq').value)throw Error('รหัสผ่านไม่ตรงกัน');await api('register',{name:v('rn'),email:v('re'),password:$('#rp').value});toast('ส่งรหัสยืนยันไปที่อีเมลแล้ว');login('ver',v('re').toLowerCase())},'กำลังสมัครสมาชิก…');
  if(mode=='ver'){$('#b1').onclick=()=>act(async()=>{const r=await api('verify',{email:em,code:v('vc')});toast(r.status=='active'?'ยืนยันอีเมลสำเร็จ เข้าสู่ระบบได้เลย':'ยืนยันอีเมลแล้ว รอผู้ดูแลอนุมัติบัญชี');login('in')},'กำลังตรวจสอบ…');
