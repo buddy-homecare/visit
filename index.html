@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="th"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>INHOMESSS Home Visit</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+/* THEME: edit these variables to match your brand/screenshot */
+:root{--pri:#0f8b8d;--pri2:#0a6466;--acc:#f28f3b;--bg:#fbf7f0;--card:#fff;--tx:#23323a;--mut:#6b7b83;--bd:#e4ddd0;--bad:#d64545;--font:'Noto Sans Thai',system-ui,sans-serif}
+*{box-sizing:border-box}body{margin:0;font-family:var(--font);background:var(--bg);color:var(--tx);padding-bottom:70px}
+header{background:var(--pri);color:#fff;display:flex;align-items:center;gap:10px;padding:8px 14px;position:sticky;top:0;z-index:5}
+header img{height:36px;background:#fff;border-radius:8px;padding:2px}header b{flex:1;font-size:15px}
+header button{background:none;border:1px solid #fff8;color:#fff;border-radius:8px;padding:4px 10px;font:inherit}
+main{max-width:820px;margin:auto;padding:14px}h2{color:var(--pri2);margin:.3em 0 .6em}h4{margin:14px 0 4px;color:var(--pri2);border-bottom:2px solid var(--acc);padding-bottom:2px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:14px;margin:10px 0}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px}
+.tile{background:var(--card);border:1px solid var(--bd);border-radius:18px;padding:18px 8px;text-align:center;cursor:pointer;box-shadow:0 2px 6px #0001;text-decoration:none;color:inherit}
+.tile i{font-style:normal;font-size:38px;display:block}.tile b{display:block;margin-top:6px}.tile small{color:var(--mut)}
+label{display:block;font-size:14px;margin:10px 0 3px;font-weight:600}
+input,select,textarea{width:100%;padding:10px;border:1px solid var(--bd);border-radius:10px;font:inherit;background:#fff}
+.o{display:flex;align-items:center;gap:8px;font-weight:400;margin:4px 0}.o input{width:auto}
+button.p,a.p{background:var(--pri);color:#fff;border:0;border-radius:12px;padding:11px 18px;font:inherit;font-weight:600;cursor:pointer;margin:6px 6px 0 0;display:inline-block;text-decoration:none}
+button.s{background:var(--acc)}button.g{background:#fff;color:var(--pri);border:1px solid var(--pri)}
+.res{background:#e8f5f3;border-left:4px solid var(--pri);padding:8px 12px;border-radius:8px;margin:10px 0;font-weight:600}.res:empty{display:none}
+.chip{display:inline-block;background:#fdebd9;border-radius:20px;padding:3px 12px;margin:3px;font-size:13px}
+nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--bd);display:flex;padding-bottom:env(safe-area-inset-bottom)}
+nav a{flex:1;text-align:center;padding:8px 0;font-size:11px;color:var(--mut);text-decoration:none}nav a i{font-style:normal;font-size:22px;display:block}
+.ph img{max-width:100%;max-height:160px;border-radius:10px;margin-top:6px}.av{width:48px;height:48px;border-radius:50%;object-fit:cover;background:var(--bd)}
+.row{display:flex;gap:12px;align-items:center}details{border:1px solid var(--bd);border-radius:12px;padding:8px 12px;margin:8px 0;background:#fff}summary{font-weight:600;cursor:pointer}
+#toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#23323a;color:#fff;padding:10px 18px;border-radius:20px;display:none;z-index:9}
+#busy{position:fixed;inset:0;background:#fff9;display:none;align-items:center;justify-content:center;z-index:8;font-weight:700}
+.login{max-width:360px;margin:8vh auto;text-align:center}.login img{height:70px;margin:6px}
+</style></head><body>
+<header id="hd"></header><main id="m"></main><nav id="nv"></nav><div id="toast"></div><div id="busy">กำลังบันทึก…</div>
+<script>
+/* ===== CONFIG ===== */
+// After deploying Apps Script, paste the /exec URL here (recommended; keeps your Google Sheet private).
+// If left empty, the app reads the "Configs" tab via a public Sheet link instead.
+const BOOT_URL = "https://script.google.com/macros/s/AKfycbzd_BYRs2f7YLE3eb0RM5o-CQQhfXlgoUEiBn0wjM1bsWU5f0J-I9ejnich1oXwqUa28A/exec";
+const DEF = {APPS_SCRIPT_URL:"",SHEET_ID:"10q8TOUjfHn6bkoyNdIZKit5ux_pVYNgLZ87Ky77DQjY",FOLDER_ID:"1HOnq8TuSHhXsbE6RitfYy_En9bRh3VNe",
+COMPANY_LOGO:"https://drive.google.com/file/d/1PI5GG1IRkXJa9ZEXzk0OMn44eEjWxcyb/view?usp=drive_link",
+PROGRAM_LOGO:"https://drive.google.com/file/d/1gXLL7mOVJ33QQ_AznoS_yy1KSXzT5eZF/view?usp=drive_link"};
+let CFG={...DEF},S={token:localStorage.tok||'',user:JSON.parse(localStorage.usr||'null')},ELD=[],LOC={};
+const $=s=>document.querySelector(s),esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const img=u=>u&&u.includes('drive.google.com/file')?`https://drive.google.com/thumbnail?id=${(u.match(/[-\w]{25,}/)||[])[0]}&sz=w400`:u||'';
+const toast=t=>{const e=$('#toast');e.textContent=t;e.style.display='block';setTimeout(()=>e.style.display='none',2800)},busy=b=>$('#busy').style.display=b?'flex':'none';
+async function loadCfg(){try{
+ if(BOOT_URL){const r=await(await fetch(BOOT_URL+'?action=config')).json();Object.assign(CFG,r.data);CFG.APPS_SCRIPT_URL=BOOT_URL}
+ else{const t=await(await fetch(`https://docs.google.com/spreadsheets/d/${DEF.SHEET_ID}/gviz/tq?tqx=out:csv&sheet=Configs`)).text();
+  t.split('\n').forEach(l=>{const m=l.match(/^"((?:[^"]|"")*)","((?:[^"]|"")*)"/);if(m&&m[2])CFG[m[1]]=m[2].replace(/""/g,'"')})}
+}catch(e){console.warn('config',e)}}
+async function api(action,d={}){if(!CFG.APPS_SCRIPT_URL)throw Error('ยังไม่ได้ตั้งค่า APPS_SCRIPT_URL');
+ const r=await(await fetch(CFG.APPS_SCRIPT_URL,{method:'POST',body:JSON.stringify({action,token:S.token,...d})})).json();
+ if(!r.ok){if(r.error=='SESSION'){logout();throw Error('หมดเวลา กรุณาเข้าสู่ระบบใหม่')}throw Error(r.error)}return r.data}
+function logout(){localStorage.removeItem('tok');localStorage.removeItem('usr');S={token:'',user:null};go()}
+
+/* ===== FORM SCHEMA ===== */
+const F=(t,k,l,o)=>({t,k,l,o}),T=(k,l)=>F('T',k,l),N=(k,l)=>F('N',k,l),A=(k,l)=>F('A',k,l),Sx=(k,l,o)=>F('S',k,l,o),C=(k,l,o)=>F('C',k,l,o),R=(k,l,o)=>F('R',k,l,o),P=(k,l)=>F('P',k,l),H=l=>F('H','',l);
+const YN=['ไม่ใช่','ใช่'],MI=['ไม่มี','มี'],R3=['ทำได้ด้วยตัวเอง','ทำได้บ้าง ต้องมีคนช่วย','ทำเองไม่ได้เลย'],CO=['กลั้นได้ปกติ','กลั้นไม่ได้บางครั้ง','กลั้นไม่ได้เลย (รวมใส่สายสวน)'];
+const BADL=['ตัก/หยิบอาหารรับประทาน','ล้างหน้า แปรงฟัน หวีผม','สวมใส่เสื้อผ้า','อาบน้ำ','ใช้ห้องส้วมและทำความสะอาดหลังขับถ่าย','ลุกจากที่นอน/เตียง','เดินหรือเคลื่อนที่ในบ้าน','ขึ้นลงบันได 1 ชั้น'];
+const IADL=['เดินหรือเคลื่อนที่นอกบ้าน','ทำหรือเตรียมอาหาร','กวาด/ถูบ้านหรือซักรีดผ้า','ซื้อของ/จ่ายตลาด','ใช้บริการขนส่งสาธารณะ','รับประทานยาตามแพทย์สั่ง'];
+const TG=['ผู้สูงอายุในชุมชน (>13.5 วินาที)','ผู้สูงอายุในโรงพยาบาล (>15 วินาที)','โรคหลอดเลือดสมอง (>14 วินาที)'];
+const FRAT=['เพศหญิง (1)','การมองเห็นบกพร่อง (1)','การทรงตัวบกพร่อง: ยืนต่อเท้าไม่ได้/ไม่ถึง 10 วินาที (2)','ใช้ยานอนหลับ/ยากล่อมประสาท/ลดความดัน/ขับปัสสาวะ หรือยา ≥4 ชนิด (1)','หกล้ม ≥2 ครั้งใน 6 เดือน (5)','บ้านยกพื้นสูง ≥1.5 เมตร (1)'];
+const GR=['ช่วยเหลือตัวเองดี','ช่วยเหลือตัวเองได้ปานกลาง ต้องการความช่วยเหลือบางส่วน','ช่วยเหลือตัวเองได้น้อย/ไม่ได้ ต้องการความช่วยเหลือมาก'];
+const DOM=[
+{id:1,ico:'🚶',th:'การเคลื่อนไหว',en:'Immobility',intro:'ประเมินความสามารถในการเคลื่อนไหวและการดำรงชีพ ทั้งกิจวัตรประจำวัน และความเสี่ยงพลัดตกหกล้ม ซึ่งพบบ่อยในผู้สูงอายุและป้องกันได้ ควรคัดกรองอย่างน้อยปีละ 1 ครั้ง',tools:['BADL','IADL','TUG','Thai-FRAT'],
+ f:[H('ความเสี่ยงต่อการล้ม'),Sx('q1','มีประวัติหกล้มใน 1 ปีที่ผ่านมา',YN),Sx('q2','รู้สึกยืน/เดินไม่มั่นคง',YN),Sx('q3','กังวลว่าจะหกล้ม',YN),N('tug','TUG (วินาที)'),Sx('tugg','กลุ่มเทียบค่า TUG',TG),C('frat','Thai-FRAT (เลือกข้อที่พบ)',FRAT),
+ H('กิจวัตรประจำวันพื้นฐาน (BADL)'),...BADL.map((l,i)=>R('a'+(i+1),(i+1)+'. '+l,R3)),R('a9','9. กลั้นปัสสาวะ',CO),R('a10','10. กลั้นอุจจาระ',CO),
+ H('กิจวัตรที่ซับซ้อน (IADL)'),...IADL.map((l,i)=>R('a'+(i+11),(i+11)+'. '+l,R3))],
+ calc:v=>{let s=0,n=0,h='';for(let i=1;i<=16;i++)if(v['a'+i]){s+=v['a'+i];n++}
+  if(n)h+=`ADL ${s} คะแนน (${n}/16 ข้อ) → กลุ่ม ${s<=20?1:s<=35?2:3}: ${GR[s<=20?0:s<=35?1:2]}<br>`;
+  if(v.tug){const c=[13.5,15,14][Math.max(0,TG.indexOf(v.tugg))];h+=`TUG ${v.tug} วินาที → ${+v.tug>c?'เสี่ยงล้ม':'เสี่ยงน้อย'}<br>`}
+  if(v.frat.length){const t=v.frat.reduce((a,x)=>a+ +x.match(/\((\d)\)$/)[1],0);h+=`Thai-FRAT ${t}/11 → ${t>=4?'เสี่ยงต่อการหกล้ม':'เสี่ยงน้อย'}`}return h}},
+{id:2,ico:'🍚',th:'ภาวะโภชนาการ',en:'Nutrition',intro:'ประเมินภาวะโภชนาการ น้ำหนัก ส่วนสูง BMI รอบเอว พฤติกรรมการกิน การดื่มเหล้า สูบบุหรี่ และการใช้สายให้อาหาร',tools:['น้ำหนัก/ส่วนสูง/BMI','รอบเอว','การสอบถามอาหาร'],
+ f:[N('wt','น้ำหนัก (กก.)'),N('ht','ส่วนสูง (ซม.)'),N('waist','รอบเอว (ซม.)'),Sx('ng','สายให้อาหาร (NG)',MI),T('ngd','วันที่ใส่ / ข้างที่ใส่'),N('meals','จำนวนมื้ออาหาร/วัน'),T('fav','อาหารโปรด'),T('taste','รสชาติที่ชอบ'),Sx('alc','ดื่มเหล้า',MI),Sx('smk','สูบบุหรี่',MI)],
+ calc:v=>{if(!v.wt||!v.ht)return'';const b=v.wt/Math.pow(v.ht/100,2);return`BMI ${b.toFixed(1)} → ${b<18.5?'น้ำหนักน้อย':b<23?'ปกติ':b<25?'น้ำหนักเกิน':'อ้วน'}`}},
+{id:3,ico:'🏠',th:'สภาพบ้าน',en:'Housing',intro:'ประเมินสภาพบ้านและสิ่งแวดล้อม: ปลอดภัยทางกายภาพ เข้าถึงง่าย กระตุ้นความมีชีวิตชีวา และดูแลรักษาง่าย พร้อมภาพถ่ายประกอบ',tools:['เช็กลิสต์สภาพบ้าน','ภาพถ่าย'],
+ f:[C('hs','ลักษณะบ้าน (เลือกที่เข้าข่าย)',['ความปลอดภัยทางกายภาพ','เข้าถึงง่าย','กระตุ้นความมีชีวิตชีวา','ดูแลรักษาง่าย']),P('p1','ภาพสภาพบ้าน'),P('p2','ภาพห้องนอน/ที่นอน'),P('p3','ภาพห้องน้ำ'),P('p4','ภาพห้องครัว'),P('p5','ภาพจุดเสี่ยงในบ้าน'),P('p6','ภาพจุดเสี่ยงนอกบ้าน'),P('p7','ภาพจุดที่ใช้เวลามากที่สุด')]},
+{id:4,ico:'👪',th:'สมาชิกในบ้านและเพื่อนบ้าน',en:'Other People',intro:'ประเมินผู้ดูแล ภาวะพึ่งพิง การช่วยเหลือจากชุมชน ผู้ตัดสินใจแทน และความสัมพันธ์กับเพื่อนบ้าน',tools:['ข้อมูลผู้ดูแล','เครือข่ายชุมชน'],
+ f:[Sx('cg','มีผู้ดูแล',MI),T('cgn','ชื่อ-สกุลผู้ดูแล'),T('cgr','ความสัมพันธ์'),Sx('dep','มีภาวะพึ่งพิง',MI),T('com','การช่วยเหลือจากชุมชน/สังคม (ระบุ)'),T('dm','ผู้ตัดสินใจเรื่องการรักษาแทน (ระบุ)'),T('nb','เพื่อนบ้าน ชื่อ-สกุล'),Sx('nbc','ความสนิท',['สนิท','ไม่สนิท'])]},
+{id:5,ico:'💊',th:'การใช้ยา',en:'Medication',intro:'ทบทวนการใช้ยา ทั้งยาที่แพทย์สั่ง ยาที่ซื้อเอง และอาหารเสริม ดูวิธีจัดยาและความสม่ำเสมอในการกิน',tools:['ทบทวนรายการยา','ถ่ายภาพซองยา'],
+ f:[Sx('who','ผู้จัดยา',['จัดยากินเอง','มีคนจัดให้']),T('whon','ระบุผู้จัดยาให้'),Sx('adh','กินยาตามแพทย์สั่ง',['ใช่','ไม่ใช่']),A('rx','ยาที่แพทย์สั่ง (ระบุ)'),P('rxp','ภาพซองยา/ลักษณะยา (แพทย์สั่ง)'),A('otc','ยาที่ซื้อเอง/อาหารเสริม (ระบุ)'),P('otcp','ภาพซองยา/ลักษณะยา (ซื้อเอง)')]},
+{id:6,ico:'🩺',th:'การตรวจร่างกาย',en:'Examination',intro:'ตรวจร่างกายเบื้องต้น สัญญาณชีพ น้ำตาลปลายนิ้ว แผลกดทับ การมองเห็น ช่องปาก ความจำ และอารมณ์',tools:['สัญญาณชีพ','DTX','MMSE','TGDS'],
+ f:[N('t','อุณหภูมิ (°C)'),N('sys','BP Systolic (mmHg)'),N('dia','BP Diastolic (mmHg)'),N('pr','PR (ครั้ง/นาที)'),N('rr','RR (ครั้ง/นาที)'),N('dtx','DTX (mg%)'),T('dtxt','เวลาตรวจ / เวลาที่กินอาหาร'),Sx('weak','อ่อนแรง',MI),T('jt','ข้อติด (ระบุบริเวณ)'),T('pu','แผลกดทับ (grade/ตำแหน่ง)'),P('pup','ภาพแผลกดทับ'),Sx('eye','ปัญหาการมองเห็น',MI),Sx('oral','ปัญหาช่องปาก',MI),Sx('cvd','ความเสี่ยงโรคหัวใจ/หลอดเลือดสมอง',['เสี่ยง','เสี่ยงสูง','เสี่ยงสูงมาก']),Sx('knee','ข้อเข่าเสื่อม',MI),Sx('bl','การกลั้นปัสสาวะ',['ปกติ','มีปัญหา','สายสวนปัสสาวะ']),T('bld','วันที่ใส่สายสวน'),N('mmse','MMSE (คะแนน)'),Sx('dem','ภาวะสมองเสื่อม',MI),N('tgds','TGDS (คะแนน)'),Sx('dep','ภาวะซึมเศร้า',['ปกติ','เศร้าเล็กน้อย','เศร้าปานกลาง','เศร้ารุนแรง']),T('oth','ความผิดปกติอื่น ๆ')]},
+{id:7,ico:'🛡️',th:'ความปลอดภัย',en:'Safety',intro:'ประเมินสิ่งคุกคามและความปลอดภัยในบ้าน เพื่อป้องกันอุบัติเหตุและความเสี่ยงต่อสุขภาพ',tools:['เช็กลิสต์ความปลอดภัย'],
+ f:[C('th','สิ่งคุกคาม',['ทางกายภาพ','ทางเคมี','ทางชีวภาพ','ทางจิตใจ','ทางชีวกลศาสตร์']),C('sf','จุดที่ไม่ปลอดภัย/ต้องปรับปรุง',['ครัว','ห้องน้ำ','บันได','เครื่องใช้ไฟฟ้า','อากาศในบ้าน','น้ำกินน้ำใช้','ความพร้อมภาวะฉุกเฉิน','ระบบไฟฟ้า','แสงสว่าง','ความพร้อมอัคคีภัย','พื้นห้อง','อุปกรณ์ในบ้าน','สัตว์เลี้ยง']),T('oth','อื่น ๆ (ระบุ)')]},
+{id:8,ico:'🕊️',th:'สุขภาวะทางจิตวิญญาณ',en:'Spiritual Health',intro:'ทำความเข้าใจสิ่งที่ทำให้ชีวิตมีคุณค่า จิตใจเบิกบาน และเจตจำนงในวาระสุดท้ายของชีวิต',tools:['การพูดคุยเชิงลึก'],
+ f:[A('val','สิ่งที่ทำให้ชีวิตมีคุณค่า/จิตใจเบิกบาน'),A('eol','เจตจำนงในวาระสุดท้ายของชีวิต')]},
+{id:9,ico:'🏥',th:'แหล่งบริการสุขภาพ',en:'Services',intro:'ระบุแหล่งบริการสุขภาพใกล้บ้านและวิธีการเดินทางไปรับบริการ',tools:['แหล่งบริการ','การเดินทาง'],
+ f:[T('hos','โรงพยาบาล'),T('vhc','ศูนย์สุขภาพประจำหมู่บ้าน'),T('rhp','โรงพยาบาลส่งเสริมสุขภาพตำบล'),T('oth','อื่น ๆ'),C('trv','การเดินทาง',['รถส่วนตัว','รถประจำทาง','รถรับจ้าง','อบต.','อื่น ๆ'])]}];
+const IDEA={id:'i',f:[A('idea','Idea – ความคิดต่อการเจ็บป่วย'),A('feel','Feeling – ความรู้สึก'),A('func','Function – ความสามารถ/การทำงาน'),A('exp','Expectation – ความคาดหวังต่อการรักษา')]};
+const EL={id:'e',f:[P('photo','รูปถ่าย'),T('name','ชื่อ-สกุล'),F('D','birth','วันเดือนปีเกิด (ไม่ทราบวัน/เดือน ใช้ 1)'),T('cid','เลขบัตรประชาชน/เลขเอกสาร'),T('hn','HN'),A('addr','ที่อยู่'),T('phone','เบอร์โทรผู้ป่วย/ญาติ'),Sx('rights','สิทธิ์การรักษา',['สิทธิบัตรทอง','สิทธิประกันสังคม','สิทธิข้าราชการ','ประกันกลุ่ม','ประกันสุขภาพเอกชน','M-Fund','ไม่มี']),
+ C('problems','ปัญหาสุขภาพ',['โรคความดันโลหิตสูง','โรคหลอดเลือดสมอง','โรคอัมพฤกษ์ อัมพาต','โรคเบาหวาน','โรคหัวใจ','โรคไต','โรคมะเร็ง','โรคปอดอุดกั้นเรื้อรัง','โรคข้อเข่าเสื่อม','โรคกระดูกพรุน','โรคเกาต์','โรคสมองเสื่อม','โรคตา','โรคระบบทางเดินปัสสาวะ','อื่น ๆ'])]};
+
+/* ===== FORM ENGINE ===== */
+const nm=(d,x)=>`d${d.id}_${x.k}`;
+function fld(d,x){const n=nm(d,x);if(x.t=='H')return`<h4>${x.l}</h4>`;let c='';
+ if(x.t=='T')c=`<input name="${n}">`;else if(x.t=='N')c=`<input type="number" step="any" inputmode="decimal" name="${n}">`;else if(x.t=='D')c=`<input type="date" name="${n}">`;
+ else if(x.t=='A')c=`<textarea rows="3" name="${n}"></textarea>`;
+ else if(x.t=='S')c=`<select name="${n}"><option value="">-- เลือก --</option>${x.o.map(o=>`<option>${o}</option>`).join('')}</select>`;
+ else if(x.t=='C')c=x.o.map(o=>`<label class="o"><input type="checkbox" name="${n}" value="${o}">${o}</label>`).join('');
+ else if(x.t=='R')c=x.o.map((o,i)=>`<label class="o"><input type="radio" name="${n}" value="${i+1}">${o}</label>`).join('');
+ else if(x.t=='P')c=`<div class="ph"><input type="file" accept="image/*" capture="environment" name="${n}"><img hidden></div>`;
+ return`<label>${x.l}</label>${c}`}
+function collect(r,d){const o={};d.f.forEach(x=>{if(x.t=='H')return;const n=nm(d,x);
+ if(x.t=='C')o[x.k]=[...r.querySelectorAll(`[name="${n}"]:checked`)].map(e=>e.value);
+ else if(x.t=='R'){const e=r.querySelector(`[name="${n}"]:checked`);o[x.k]=e?+e.value:''}
+ else if(x.t=='P')o[x.k]=r._ph[n]||'';else o[x.k]=r.querySelector(`[name="${n}"]`).value});
+ const e=r.querySelector('.res');o._result=e?e.innerText:'';return o}
+function showPh(r,n,u){r._ph[n]=u;const i=r.querySelector(`[name="${n}"]`).nextElementSibling;i.src=u;i.hidden=false}
+function fill(r,d,v){d.f.forEach(x=>{if(x.t=='H'||!v||v[x.k]==null||v[x.k]==='')return;const n=nm(d,x);let a=v[x.k];
+ if(x.t=='C'){if(typeof a=='string')try{a=JSON.parse(a)}catch{a=[a]}r.querySelectorAll(`[name="${n}"]`).forEach(e=>e.checked=a.includes(e.value))}
+ else if(x.t=='R'){const e=r.querySelector(`[name="${n}"][value="${a}"]`);if(e)e.checked=true}
+ else if(x.t=='P')showPh(r,n,a);else r.querySelector(`[name="${n}"]`).value=x.t=='D'?String(a).slice(0,10):a})}
+function mk(d,v){const r=document.createElement('div');r._ph={};r.innerHTML=d.f.map(x=>fld(d,x)).join('')+(d.calc?'<div class="res"></div>':'');if(v)fill(r,d,v);
+ const up=()=>{if(d.calc)r.querySelector('.res').innerHTML=d.calc(collect(r,d))};r.addEventListener('input',up);
+ r.addEventListener('change',e=>{const el=e.target;if(el.type!='file'||!el.files[0])return;const im=new Image();im.onload=()=>{const s=Math.min(1,1024/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=im.width*s;c.height=im.height*s;c.getContext('2d').drawImage(im,0,0,c.width,c.height);showPh(r,el.name,c.toDataURL('image/jpeg',.7))};im.src=URL.createObjectURL(el.files[0])});up();return r}
+async function ups(o){for(const k in o)if(typeof o[k]=='string'&&o[k].startsWith('data:'))o[k]=await api('upload',{data:o[k].split(',')[1],name:k+'_'+Date.now()+'.jpg'});return o}
+const filled=o=>Object.keys(o).some(k=>k!='_result'&&o[k]!==''&&!(Array.isArray(o[k])&&!o[k].length));
+function fmt(id,o){const d=DOM.find(x=>x.id==id);if(!d)return'';return d.f.filter(x=>x.t!='H'&&o[x.k]!==undefined&&o[x.k]!==''&&!(Array.isArray(o[x.k])&&!o[x.k].length)).map(x=>`<div><b>${x.l}</b>: ${x.t=='P'?`<a href="${o[x.k]}" target="_blank">📷 ดูรูป</a>`:esc(Array.isArray(o[x.k])?o[x.k].join(', '):x.t=='R'?x.o[o[x.k]-1]:o[x.k])}</div>`).join('')+(o._result?`<div class="res">${esc(o._result)}</div>`:'')}
+
+/* ===== PAGES ===== */
+const age=b=>b?Math.floor((Date.now()-new Date(b))/31557600000):'';
+const pj=s=>{try{return JSON.parse(s)}catch{return{}}};
+async function needE(f){if(!ELD.length||f)ELD=await api('listElders')}
+const eSel=id=>`<select id="el"><option value="">-- เลือกผู้สูงอายุ --</option>${ELD.map(e=>`<option value="${e.id}" ${e.id==id?'selected':''}>${esc(e.name)} (${age(e.birth)||'?'} ปี)</option>`).join('')}</select>`;
+const M=$('#m');
+async function go(){const h=(location.hash||'#home').slice(1).split('/'),p=h[0];
+ $('#hd').innerHTML=`<img src="${img(CFG.COMPANY_LOGO)}" alt=""><b>INHOMESSS Home Visit</b><img src="${img(CFG.PROGRAM_LOGO)}" alt="">${S.user?`<button onclick="logout()">ออก</button>`:''}`;
+ $('#nv').innerHTML=S.token?[['home','🏠','หน้าแรก'],['visit','📝','เยี่ยมบ้าน'],['tools','🧰','เครื่องมือ'],['elders','👵','ผู้สูงอายุ'],['about','ℹ️','เกี่ยวกับ']].map(a=>`<a href="#${a[0]}">${a[1]}<span>${a[2]}</span></a>`).join(''):'';
+ if(!S.token)return login();
+ try{await({home,visit,tools,tool,elders,elder,eform,about,users}[p]||home)(h[1])}catch(e){M.innerHTML=`<div class="card">⚠️ ${esc(e.message)}</div>`}}
+function login(){M.innerHTML=`<div class="login card"><img src="${img(CFG.COMPANY_LOGO)}"><img src="${img(CFG.PROGRAM_LOGO)}"><h2>เข้าสู่ระบบ</h2><input id="u" placeholder="ชื่อผู้ใช้" autocapitalize="off"><br><br><input id="pw" type="password" placeholder="รหัสผ่าน"><br><button class="p" id="lg">เข้าสู่ระบบ</button></div>`;
+ $('#lg').onclick=async()=>{busy(1);try{const r=await api('login',{username:$('#u').value.trim(),password:$('#pw').value});S=r;localStorage.tok=r.token;localStorage.usr=JSON.stringify(r.user);location.hash='home';go()}catch(e){toast(e.message)}busy(0)}}
+function home(){M.innerHTML=`<h2>สวัสดี ${esc(S.user.name)} 👋</h2><div class="grid">
+<a class="tile" href="#visit"><i>📝</i><b>Home Care Visit</b><small>แบบบันทึกการเยี่ยมบ้านผู้สูงอายุ</small></a>
+<a class="tile" href="#tools"><i>🧰</i><b>INHOMESSS tools</b><small>แบบบันทึกแต่ละด้าน 9 ด้าน</small></a>
+<a class="tile" href="#elders"><i>👵</i><b>ผู้สูงอายุ</b><small>ฐานข้อมูล / ประวัติ</small></a>
+<a class="tile" href="#about"><i>ℹ️</i><b>About</b><small>Adopt A Granny · TaeJai · Buddy HomeCare</small></a>
+${S.user.role=='admin'?'<a class="tile" href="#users"><i>👥</i><b>ผู้ใช้งาน</b><small>จัดการบัญชี</small></a>':''}</div>`}
+async function visit(){await needE();M.innerHTML=`<h2>แบบบันทึกการเยี่ยมบ้านผู้สูงอายุ</h2><div class="card"><label>วันที่เยี่ยม (บันทึกอัตโนมัติ)</label><input disabled value="${new Date().toLocaleString('th-TH')}"><label>ผู้สูงอายุ</label>${eSel()}<a class="p g" href="#eform/new">+ เพิ่มผู้สูงอายุรายใหม่</a><label>พิกัด</label><div id="loc">กำลังหาตำแหน่ง…</div></div>
+<div class="card"><h4>การประเมินความเจ็บป่วย (IDEA) – บันทึกตามคำพูดผู้ป่วย</h4><div id="ia"></div></div><div id="ds"></div><button class="p s" id="sv">💾 บันทึกการเยี่ยม</button>`;
+ navigator.geolocation?.getCurrentPosition(p=>{LOC={lat:p.coords.latitude,lng:p.coords.longitude};$('#loc').textContent=`${LOC.lat.toFixed(5)}, ${LOC.lng.toFixed(5)}`},()=>$('#loc').textContent='ไม่สามารถอ่านตำแหน่งได้');
+ const ia=mk(IDEA);$('#ia').append(ia);const rs={};DOM.forEach(d=>{const de=document.createElement('details');de.innerHTML=`<summary>${d.ico} ${d.id}. ${d.th} (${d.en})</summary>`;rs[d.id]=mk(d);de.append(rs[d.id]);$('#ds').append(de)});
+ $('#sv').onclick=async()=>{const id=$('#el').value;if(!id)return toast('กรุณาเลือกผู้สูงอายุ');busy(1);try{const as={};for(const d of DOM){const o=collect(rs[d.id],d);if(filled(o))as[d.id]=await ups(o)}
+  await api('saveVisit',{elderId:id,lat:LOC.lat||'',lng:LOC.lng||'',idea:collect(ia,IDEA),assess:as});toast('บันทึกแล้ว ✔');location.hash='elder/'+id}catch(e){toast(e.message)}busy(0)}}
+function tools(){M.innerHTML=`<h2>INHOMESSS tools</h2><div class="grid">${DOM.map(d=>`<a class="tile" href="#tool/${d.id}"><i>${d.ico}</i><b>${d.id}. ${d.th}</b><small>${d.en}</small></a>`).join('')}</div>`}
+async function tool(id){const d=DOM.find(x=>x.id==id);await needE();M.innerHTML=`<h2>${d.ico} ${d.id}. ${d.th} (${d.en})</h2><div class="card"><h4>Overview</h4><p>${d.intro}</p><h4>Assessment tools</h4>${d.tools.map(t=>`<span class="chip">${t}</span>`).join('')}</div>
+<div class="card"><h4>บันทึกการประเมิน</h4><label>ผู้สูงอายุ</label>${eSel()}<div id="fm"></div><button class="p s" id="sv">💾 บันทึก</button></div>`;
+ const r=mk(d);$('#fm').append(r);$('#sv').onclick=async()=>{const e=$('#el').value;if(!e)return toast('กรุณาเลือกผู้สูงอายุ');busy(1);try{await api('saveAssess',{elderId:e,domain:d.id,data:await ups(collect(r,d))});toast('บันทึกแล้ว ✔');location.hash='elder/'+e}catch(x){toast(x.message)}busy(0)}}
+async function elders(){await needE(1);const draw=q=>$('#lst').innerHTML=ELD.filter(e=>(e.name+e.cid+e.hn).includes(q)).map(e=>`<a class="card row" href="#elder/${e.id}" style="text-decoration:none;color:inherit"><img class="av" src="${esc(e.photo)}"><div><b>${esc(e.name)}</b><br><small>${age(e.birth)||'?'} ปี · ${esc(e.addr).slice(0,40)}</small></div></a>`).join('')||'<p>ไม่พบข้อมูล</p>';
+ M.innerHTML=`<h2>ฐานข้อมูลผู้สูงอายุ (${ELD.length})</h2><input id="q" placeholder="ค้นหาชื่อ / เลขบัตร / HN"><a class="p" href="#eform/new">+ เพิ่มผู้สูงอายุ</a><div id="lst"></div>`;draw('');$('#q').oninput=e=>draw(e.target.value)}
+async function elder(id){await needE();const e=ELD.find(x=>x.id==id);if(!e)throw Error('ไม่พบข้อมูล');const hs=await api('history',{elderId:id});
+ const pr=Array.isArray(e.problems)?e.problems:(()=>{try{return JSON.parse(e.problems)}catch{return[]}})();
+ const items=[...hs.visits.map(v=>({d:v.date,h:`📝 เยี่ยมบ้าน (${esc(v.user)})`,b:Object.entries(pj(v.idea)).filter(([k,x])=>x&&k!='_result').map(([k,x])=>`<div><b>${IDEA.f.find(f=>f.k==k)?.l||k}</b>: ${esc(x)}</div>`).join(''),vid:v.id}),...hs.assess.map(a=>({d:a.date,h:`${DOM[a.domain-1].ico} ด้าน ${a.domain}: ${DOM[a.domain-1].th}${a.visitId?' (ในการเยี่ยม)':''}`,b:fmt(a.domain,pj(a.data))}))].sort((a,b)=>b.d>a.d?1:-1);
+ M.innerHTML=`<div class="card row"><img class="av" style="width:80px;height:80px" src="${esc(e.photo)}"><div><h2 style="margin:0">${esc(e.name)}</h2>${age(e.birth)||'?'} ปี · HN ${esc(e.hn)||'-'}<br>${esc(e.phone)}</div></div>
+ <div class="card">📍 ${esc(e.addr)}<br>สิทธิ์: ${esc(e.rights)||'-'}<br>บัตร: ${esc(e.cid)||'-'}<br>${pr.map(p=>`<span class="chip">${esc(p)}</span>`).join('')}</div>
+ <a class="p" href="#eform/${id}">✏️ แก้ไข</a><a class="p s" href="#tools">+ ประเมินด้านใดด้านหนึ่ง</a><h2>ประวัติ</h2>${items.map(i=>`<details><summary>${i.h} · ${new Date(i.d).toLocaleDateString('th-TH')}</summary>${i.b||'-'}</details>`).join('')||'<p>ยังไม่มีประวัติ</p>'}`}
+async function eform(id){await needE();const e=id!='new'&&ELD.find(x=>x.id==id);M.innerHTML=`<h2>${e?'แก้ไข':'เพิ่ม'}ข้อมูลผู้สูงอายุ</h2><div class="card"><div id="fm"></div><label>พิกัดบ้าน</label><input id="la" placeholder="ละติจูด" value="${e?e.lat:''}"><input id="ln" placeholder="ลองจิจูด" value="${e?e.lng:''}"><button class="p g" id="gp">📍 ใช้ตำแหน่งปัจจุบัน</button><br><button class="p s" id="sv">💾 บันทึก</button></div>`;
+ const r=mk(EL,e);$('#fm').append(r);$('#gp').onclick=()=>navigator.geolocation.getCurrentPosition(p=>{$('#la').value=p.coords.latitude;$('#ln').value=p.coords.longitude});
+ $('#sv').onclick=async()=>{const o=collect(r,EL);if(!o.name)return toast('กรุณากรอกชื่อ');busy(1);try{await ups(o);o.problems=JSON.stringify(o.problems);o.lat=$('#la').value;o.lng=$('#ln').value;if(e)o.id=e.id;const nid=await api('saveElder',{elder:o});await needE(1);toast('บันทึกแล้ว ✔');location.hash='elder/'+nid}catch(x){toast(x.message)}busy(0)}}
+function about(){const B=(t,s,d)=>`<div class="card"><h2>${t}</h2><small>${s}</small><p>${d}</p></div>`;M.innerHTML=`<div class="card" style="text-align:center"><img src="${img(CFG.PROGRAM_LOGO)}" height="80"> <img src="${img(CFG.COMPANY_LOGO)}" height="80"></div>
+${B('Adopt A Granny','ปันรัก ปันสุข','โครงการดูแลผู้สูงอายุยากไร้ที่ขาดโอกาส ร่วมกับผู้นำชุมชนและ อสม. ด้วยการเยี่ยมบ้าน ประเมินสุขภาพ มอบอาหาร ยาสามัญประจำบ้าน และปรับปรุงที่อยู่อาศัย (ขยายพื้นที่สู่ อ.แม่สอด จ.ตาก)')}
+${B('TaeJai (เทใจ)','แพลตฟอร์มระดมทุน','แพลตฟอร์มระดมทุนเพื่อโครงการเพื่อสังคม การบริจาคเดือนละ 350 บาท หรือ 4,200 บาทต่อปี ช่วยให้ผู้สูงอายุหนึ่งคนมีชีวิตที่ดีขึ้น')}
+${B('Buddy HomeCare','วิสาหกิจเพื่อสังคม · เชียงใหม่','เริ่มดำเนินงานตั้งแต่ปี 2558 ให้บริการดูแลผู้สูงอายุและผู้ป่วยที่บ้าน ทำงานร่วมกับมูลนิธิพัฒนางานผู้สูงอายุ')}
+<div class="card"><h4>INHOMESSS</h4>Immobility · Nutrition · Housing · Other people · Medication · Examination · Safety · Spiritual health · Services</div>`}
+async function users(){const l=await api('listUsers');M.innerHTML=`<h2>ผู้ใช้งาน</h2><div class="card"><input id="un" placeholder="username"><br><br><input id="nn" placeholder="ชื่อ-สกุล"><br><br><input id="pp" type="password" placeholder="รหัสผ่านใหม่"><br><br><select id="rr"><option value="staff">staff</option><option value="admin">admin</option></select><button class="p" id="sv">บันทึก/แก้ไขผู้ใช้</button></div>${l.map(u=>`<div class="card">${esc(u.username)} · ${esc(u.name)} · ${u.role}</div>`).join('')}`;
+ $('#sv').onclick=async()=>{try{await api('saveUser',{username:$('#un').value,name:$('#nn').value,password:$('#pp').value,role:$('#rr').value});toast('บันทึกแล้ว');users()}catch(e){toast(e.message)}}}
+window.onhashchange=go;loadCfg().then(go);
+</script></body></html>
