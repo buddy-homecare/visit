@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html lang="th"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>INHOMESSS Home Visit</title>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;600;700&display=swap" rel="stylesheet">
+<title>Buddy HomeCare - Home Visit</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;600;700&family=Noto+Sans+Myanmar:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
 /* THEME: edit these variables to match your brand/screenshot */
-:root{--pri:#0f8b8d;--pri2:#0a6466;--acc:#f28f3b;--bg:#fbf7f0;--card:#fff;--tx:#23323a;--mut:#6b7b83;--bd:#e4ddd0;--bad:#d64545;--font:'Noto Sans Thai',system-ui,sans-serif}
+:root{--pri:#0f8b8d;--pri2:#0a6466;--acc:#f28f3b;--bg:#fbf7f0;--card:#fff;--tx:#23323a;--mut:#6b7b83;--bd:#e4ddd0;--bad:#d64545;--font:'Noto Sans Thai','Noto Sans Myanmar',system-ui,sans-serif}
+header select{width:auto;padding:4px 6px;border-radius:8px;border:1px solid #fff8;background:#fff;color:var(--tx);font-size:13px}
 *{box-sizing:border-box}body{margin:0;font-family:var(--font);background:var(--bg);color:var(--tx);padding-bottom:70px}
 header{background:var(--pri);color:#fff;display:flex;align-items:center;gap:10px;padding:8px 14px;position:sticky;top:0;z-index:5}
 header img{height:36px;background:#fff;border-radius:8px;padding:2px}header b{flex:1;font-size:15px}
@@ -36,6 +37,57 @@ nav a{flex:1;text-align:center;padding:8px 0;font-size:11px;color:var(--mut);tex
 </style></head><body>
 <header id="hd"></header><main id="m"></main><nav id="nv"></nav><div id="pg"><i></i></div><div id="toast"></div><div id="busy"><div id="bt">กำลังบันทึก…</div><div class="bar"><i></i></div><small id="bh"></small></div>
 <script>
+/* ===== LANGUAGE (th / en / my) ===== */
+// Thai text in the code is the source. DICT maps Thai -> [English, Burmese]. Add more rows to translate more labels.
+const LN={th:'ไทย',en:'English',my:'မြန်မာ'};let LANG=localStorage.lang||'th';document.documentElement.lang=LANG;
+const DICT={
+'หน้าแรก':['Home','ပင်မ'],'เยี่ยมบ้าน':['Visit','အိမ်လည်ပတ်'],'เครื่องมือ':['Tools','ကိရိယာ'],'ผู้สูงอายุ':['Older persons','သက်ကြီးရွယ်အို'],'เกี่ยวกับ':['About','အကြောင်း'],'ออก':['Log out','ထွက်'],
+'เข้าสู่ระบบ':['Sign in','ဝင်ရောက်ရန်'],'สมัครสมาชิก':['Sign up','အကောင့်ဖွင့်ရန်'],'สมัครสมาชิกใหม่':['Create a new account','အကောင့်အသစ်ဖွင့်ရန်'],'มีบัญชีแล้ว? เข้าสู่ระบบ':['Have an account? Sign in','အကောင့်ရှိပြီလား? ဝင်ရောက်ရန်'],
+'อีเมลหรือชื่อผู้ใช้':['Email or username','အီးမေးလ် သို့မဟုတ် အသုံးပြုသူအမည်'],'อีเมล':['Email','အီးမေးလ်'],'รหัสผ่าน':['Password','စကားဝှက်'],'รหัสผ่าน (อย่างน้อย 8 ตัวอักษร)':['Password (min. 8 characters)','စကားဝှက် (အနည်းဆုံး ၈ လုံး)'],'ยืนยันรหัสผ่าน':['Confirm password','စကားဝှက် အတည်ပြုပါ'],
+'ชื่อ-สกุล':['Full name','အမည်အပြည့်အစုံ'],'ยืนยันอีเมล':['Verify email','အီးမေးလ် အတည်ပြုရန်'],'เราส่งรหัส 6 หลักไปที่':['We sent a 6-digit code to','ဂဏန်း ၆ လုံးကုဒ်ကို ပို့ပြီးပါပြီ -'],'รหัสยืนยัน 6 หลัก':['6-digit code','ကုဒ် ၆ လုံး'],
+'ยืนยัน':['Verify','အတည်ပြုရန်'],'ส่งรหัสอีกครั้ง':['Resend code','ကုဒ်ပြန်ပို့ရန်'],'กลับ':['Back','နောက်သို့'],
+'รหัสผ่านไม่ตรงกัน':['Passwords do not match','စကားဝှက်မကိုက်ညီပါ'],'ส่งรหัสยืนยันไปที่อีเมลแล้ว':['Verification code sent to your email','အတည်ပြုကုဒ်ကို အီးမေးလ်သို့ ပို့ပြီးပါပြီ'],'กรุณายืนยันอีเมลก่อน':['Please verify your email first','အီးမေးလ်ကို အရင်အတည်ပြုပါ'],
+'ยืนยันอีเมลสำเร็จ เข้าสู่ระบบได้เลย':['Email verified. You can sign in now.','အတည်ပြုပြီးပါပြီ၊ ဝင်ရောက်နိုင်ပါပြီ'],'ยืนยันอีเมลแล้ว รอผู้ดูแลอนุมัติบัญชี':['Email verified. Waiting for admin approval.','အတည်ပြုပြီးပါပြီ၊ အက်ဒမင်ခွင့်ပြုချက်ကို စောင့်ပါ'],'ส่งรหัสใหม่แล้ว':['New code sent','ကုဒ်အသစ် ပို့ပြီးပါပြီ'],
+'ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง':['Wrong username or password','အသုံးပြုသူအမည် သို့မဟုတ် စကားဝှက် မှားနေသည်'],'บัญชีรอผู้ดูแลอนุมัติ':['Account is waiting for admin approval','အကောင့်သည် အက်ဒမင်ခွင့်ပြုချက်ကို စောင့်နေသည်'],'อีเมลนี้ถูกใช้สมัครแล้ว':['This email is already registered','ဤအီးမေးလ်ကို အသုံးပြုပြီးဖြစ်သည်'],
+'อีเมลไม่ถูกต้อง':['Invalid email','အီးမေးလ် မမှန်ပါ'],'รหัสผ่านต้องมีอย่างน้อย 8 ตัวอักษร':['Password must be at least 8 characters','စကားဝှက်သည် အနည်းဆုံး ၈ လုံးရှိရမည်'],'รหัสไม่ถูกต้องหรือหมดอายุ':['Invalid or expired code','ကုဒ်မှားနေသည် သို့မဟုတ် သက်တမ်းကုန်ပြီ'],
+'กรุณากรอกชื่อ-สกุล':['Please enter your name','အမည်ထည့်ပါ'],'กรุณารอ 1 นาทีก่อนขอรหัสใหม่':['Please wait 1 minute before requesting a new code','ကုဒ်အသစ်မတောင်းမီ ၁ မိနစ်စောင့်ပါ'],'หมดเวลา กรุณาเข้าสู่ระบบใหม่':['Session expired. Please sign in again.','အချိန်ကုန်သွားပါပြီ၊ ပြန်ဝင်ပါ'],
+'กำลังเข้าสู่ระบบ…':['Signing in…','ဝင်ရောက်နေသည်…'],'กำลังสมัครสมาชิก…':['Creating account…','အကောင့်ဖွင့်နေသည်…'],'กำลังตรวจสอบ…':['Checking…','စစ်ဆေးနေသည်…'],'กำลังส่งอีเมล…':['Sending email…','အီးမေးလ်ပို့နေသည်…'],'กำลังบันทึก…':['Saving…','သိမ်းဆည်းနေသည်…'],
+'กำลังบันทึกลง Google Sheets…':['Saving to Google Sheets…','Google Sheets သို့ သိမ်းနေသည်…'],'กำลังอัปโหลดรูปภาพ…':['Uploading photos…','ဓာတ်ပုံတင်နေသည်…'],'กำลังเริ่มระบบ…':['Starting…','စတင်နေသည်…'],
+'กำลังโหลดข้อมูลจาก Google Sheets… (อาจใช้เวลา 5–20 วินาที)':['Loading data from Google Sheets… (may take 5–20 seconds)','Google Sheets မှ ဒေတာဖတ်နေသည်… (စက္ကန့် ၅–၂၀ ကြာနိုင်သည်)'],
+'ใช้เวลานานกว่าปกติ… Apps Script อาจกำลังเริ่มทำงานครั้งแรก หรืออินเทอร์เน็ตช้า (รอได้ถึง 30 วินาที)':['Taking longer than usual… Apps Script may be warming up, or the connection is slow (up to 30 s).','ပုံမှန်ထက်ကြာနေသည်… Apps Script စတင်နေခြင်း သို့မဟုတ် အင်တာနက်နှေးနေခြင်းဖြစ်နိုင်သည် (စက္ကန့် ၃၀ အထိ)'],
+'เชื่อมต่อระบบไม่สำเร็จ':['Could not connect','ချိတ်ဆက်၍မရပါ'],'สาเหตุ:':['Cause:','အကြောင်းရင်း -'],'ตรวจสอบ:':['Please check:','စစ်ဆေးရန် -'],'บันทึก URL และลองใหม่':['Save URL and retry','URL သိမ်းပြီး ပြန်စမ်းရန်'],'ลองใหม่':['Retry','ပြန်စမ်းရန်'],'เริ่มต้นระบบ':['Starting up','စတင်ခြင်း'],'พร้อมใช้งาน ✔':['Ready ✔','အသင့်ဖြစ်ပြီ ✔'],
+'สวัสดี':['Hello','မင်္ဂလာပါ'],'แบบบันทึกการเยี่ยมบ้านผู้สูงอายุ':['Older Person Home Visit Form','သက်ကြီးရွယ်အို အိမ်လည်ပတ်မှတ်တမ်းပုံစံ'],'แบบบันทึกแต่ละด้าน 9 ด้าน':['Record forms for the 9 domains','ဒိုမိန်း ၉ ခုအတွက် မှတ်တမ်းပုံစံများ'],'ฐานข้อมูล / ประวัติ':['Database / history','ဒေတာဘေ့စ် / မှတ်တမ်း'],'จัดการบัญชี':['Manage accounts','အကောင့်စီမံရန်'],
+'วันที่เยี่ยม (บันทึกอัตโนมัติ)':['Visit date (automatic)','လည်ပတ်သည့်ရက် (အလိုအလျောက်)'],'-- เลือกผู้สูงอายุ --':['-- Select older person --','-- သက်ကြီးရွယ်အို ရွေးပါ --'],'-- เลือก --':['-- Select --','-- ရွေးပါ --'],'+ เพิ่มผู้สูงอายุรายใหม่':['+ Add new older person','+ သက်ကြီးရွယ်အိုအသစ်ထည့်ရန်'],
+'พิกัด':['Location','တည်နေရာ'],'กำลังหาตำแหน่ง…':['Getting location…','တည်နေရာရှာနေသည်…'],'ไม่สามารถอ่านตำแหน่งได้':['Cannot read location','တည်နေရာမရပါ'],'การประเมินความเจ็บป่วย (IDEA) – บันทึกตามคำพูดผู้ป่วย':['Illness assessment (IDEA) – record the patient\'s own words','ဖျားနာမှုအကဲဖြတ်ခြင်း (IDEA) – လူနာပြောသည့်အတိုင်း မှတ်ပါ'],
+'💾 บันทึกการเยี่ยม':['💾 Save visit','💾 လည်ပတ်မှု သိမ်းရန်'],'💾 บันทึก':['💾 Save','💾 သိမ်းရန်'],'บันทึกการประเมิน':['Save assessment','အကဲဖြတ်မှု သိမ်းရန်'],'กรุณาเลือกผู้สูงอายุ':['Please select an older person','သက်ကြီးရွယ်အို ရွေးပါ'],'กรุณากรอกชื่อ':['Please enter a name','အမည်ထည့်ပါ'],'บันทึกแล้ว ✔':['Saved ✔','သိမ်းပြီးပါပြီ ✔'],'บันทึกแล้ว':['Saved','သိမ်းပြီးပါပြီ'],
+'ฐานข้อมูลผู้สูงอายุ':['Older Person Database','သက်ကြီးရွယ်အိုဒေတာဘေ့စ်'],'ค้นหาชื่อ / เลขบัตร / HN':['Search name / ID / HN','အမည် / မှတ်ပုံတင် / HN ရှာရန်'],'+ เพิ่มผู้สูงอายุ':['+ Add older person','+ သက်ကြီးရွယ်အိုထည့်ရန်'],'ไม่พบข้อมูล':['No data found','ဒေတာမတွေ့ပါ'],'ประวัติ':['History','မှတ်တမ်း'],'ยังไม่มีประวัติ':['No history yet','မှတ်တမ်းမရှိသေးပါ'],
+'✏️ แก้ไข':['✏️ Edit','✏️ ပြင်ရန်'],'+ ประเมินด้านใดด้านหนึ่ง':['+ Assess a domain','+ ဒိုမိန်းတစ်ခု အကဲဖြတ်ရန်'],'แก้ไขข้อมูลผู้สูงอายุ':['Edit older person','သက်ကြီးရွယ်အိုအချက်အလက် ပြင်ရန်'],'เพิ่มข้อมูลผู้สูงอายุ':['Add older person','သက်ကြီးရွယ်အိုအချက်အလက် ထည့်ရန်'],
+'พิกัดบ้าน':['Home coordinates','အိမ်တည်နေရာ'],'ละติจูด':['Latitude','လတ္တီတွဒ်'],'ลองจิจูด':['Longitude','လောင်ဂျီတွဒ်'],'📍 ใช้ตำแหน่งปัจจุบัน':['📍 Use current location','📍 လက်ရှိတည်နေရာသုံးရန်'],
+'รูปถ่าย':['Photo','ဓာတ်ပုံ'],'วันเดือนปีเกิด (ไม่ทราบวัน/เดือน ใช้ 1)':['Date of birth (unknown day/month → use 1)','မွေးသက္ကရာဇ် (မသိပါက ၁ သုံးပါ)'],'เลขบัตรประชาชน/เลขเอกสาร':['National ID / document no.','မှတ်ပုံတင်/စာရွက်စာတမ်းနံပါတ်'],'ที่อยู่':['Address','လိပ်စာ'],'เบอร์โทรผู้ป่วย/ญาติ':['Patient / relative phone','လူနာ/ဆွေမျိုး ဖုန်း'],'สิทธิ์การรักษา':['Health coverage','ကျန်းမာရေးအာမခံ'],'ปัญหาสุขภาพ':['Health problems','ကျန်းမာရေးပြဿနာများ'],
+'ผู้ใช้งาน':['Users','အသုံးပြုသူများ'],'บันทึก/แก้ไขผู้ใช้':['Save / edit user','အသုံးပြုသူ သိမ်း/ပြင်'],'อนุมัติ':['Approve','ခွင့်ပြုရန်'],'ปิดใช้งาน':['Disable','ပိတ်ရန်'],'ไม่ใช่':['No','မဟုတ်'],'ใช่':['Yes','ဟုတ်'],'ไม่มี':['None','မရှိ'],'มี':['Yes','ရှိ'],
+'การเคลื่อนไหว':['Mobility','လှုပ်ရှားနိုင်မှု'],'ภาวะโภชนาการ':['Nutrition','အာဟာရအခြေအနေ'],'สภาพบ้าน':['Housing','နေအိမ်အခြေအနေ'],'สมาชิกในบ้านและเพื่อนบ้าน':['Household & neighbours','အိမ်သားများနှင့် အိမ်နီးချင်းများ'],'การใช้ยา':['Medication','ဆေးသုံးစွဲမှု'],'การตรวจร่างกาย':['Physical examination','ကိုယ်ခန္ဓာစစ်ဆေးမှု'],'ความปลอดภัย':['Safety','ဘေးကင်းလုံခြုံမှု'],'สุขภาวะทางจิตวิญญาณ':['Spiritual health','စိတ်ဓာတ်ကျန်းမာရေး'],'แหล่งบริการสุขภาพ':['Health services','ကျန်းမာရေးဝန်ဆောင်မှုများ'],
+'ประเมินความสามารถในการเคลื่อนไหวและการดำรงชีพ ทั้งกิจวัตรประจำวัน และความเสี่ยงพลัดตกหกล้ม ซึ่งพบบ่อยในผู้สูงอายุและป้องกันได้ ควรคัดกรองอย่างน้อยปีละ 1 ครั้ง':['Assesses mobility and daily functioning (BADL/IADL) and the risk of falling, which is common in older people and preventable. Screen at least once a year.','လှုပ်ရှားနိုင်မှု၊ နေ့စဉ်လုပ်ငန်းစဉ်များ (BADL/IADL) နှင့် လဲကျနိုင်ခြေကို အကဲဖြတ်သည်။ တစ်နှစ်လျှင် အနည်းဆုံး တစ်ကြိမ် စစ်ဆေးသင့်သည်။'],
+'ประเมินภาวะโภชนาการ น้ำหนัก ส่วนสูง BMI รอบเอว พฤติกรรมการกิน การดื่มเหล้า สูบบุหรี่ และการใช้สายให้อาหาร':['Assesses nutrition: weight, height, BMI, waist, eating habits, alcohol, smoking and feeding tubes.','အာဟာရအခြေအနေ - အလေးချိန်၊ အရပ်၊ BMI၊ ခါးပတ်၊ စားသောက်မှု၊ အရက်၊ ဆေးလိပ်နှင့် အစာကျွေးပြွန်ကို အကဲဖြတ်သည်။'],
+'ประเมินสภาพบ้านและสิ่งแวดล้อม: ปลอดภัยทางกายภาพ เข้าถึงง่าย กระตุ้นความมีชีวิตชีวา และดูแลรักษาง่าย พร้อมภาพถ่ายประกอบ':['Assesses the home: physical safety, accessibility, stimulation and ease of maintenance, with photos.','နေအိမ်နှင့် ပတ်ဝန်းကျင် - ရုပ်ပိုင်းဆိုင်ရာ လုံခြုံမှု၊ ဝင်ထွက်လွယ်ကူမှု၊ အားရှိစေမှု၊ ထိန်းသိမ်းရလွယ်မှုကို ဓာတ်ပုံနှင့်တကွ အကဲဖြတ်သည်။'],
+'ประเมินผู้ดูแล ภาวะพึ่งพิง การช่วยเหลือจากชุมชน ผู้ตัดสินใจแทน และความสัมพันธ์กับเพื่อนบ้าน':['Assesses caregivers, dependency, community support, substitute decision-maker and neighbour relations.','စောင့်ရှောက်သူ၊ မှီခိုမှု၊ ရပ်ရွာအကူအညီ၊ ကိုယ်စားဆုံးဖြတ်သူနှင့် အိမ်နီးချင်းဆက်ဆံရေးကို အကဲဖြတ်သည်။'],
+'ทบทวนการใช้ยา ทั้งยาที่แพทย์สั่ง ยาที่ซื้อเอง และอาหารเสริม ดูวิธีจัดยาและความสม่ำเสมอในการกิน':['Reviews medicines: prescribed, self-bought and supplements, how they are organised and adherence.','ဆရာဝန်ညွှန်ဆေး၊ ကိုယ်တိုင်ဝယ်ဆေးနှင့် ဖြည့်စွက်စာများ၊ ဆေးစီစဉ်ပုံနှင့် မှန်မှန်သောက်မှုကို ပြန်လည်စစ်ဆေးသည်။'],
+'ตรวจร่างกายเบื้องต้น สัญญาณชีพ น้ำตาลปลายนิ้ว แผลกดทับ การมองเห็น ช่องปาก ความจำ และอารมณ์':['Basic examination: vital signs, blood sugar (DTX), pressure sores, vision, oral health, memory and mood.','အခြေခံစစ်ဆေးမှု - အသက်ရှူ/သွေးပေါင်/အပူချိန်၊ သွေးချို (DTX)၊ ဖိအားအနာ၊ မျက်စိ၊ ခံတွင်း၊ မှတ်ဉာဏ်နှင့် စိတ်ခံစားမှု။'],
+'ประเมินสิ่งคุกคามและความปลอดภัยในบ้าน เพื่อป้องกันอุบัติเหตุและความเสี่ยงต่อสุขภาพ':['Assesses hazards and safety in the home to prevent accidents and health risks.','မတော်တဆမှုနှင့် ကျန်းမာရေးအန္တရာယ်ကာကွယ်ရန် အိမ်တွင်းအန္တရာယ်နှင့် ဘေးကင်းလုံခြုံမှုကို အကဲဖြတ်သည်။'],
+'ทำความเข้าใจสิ่งที่ทำให้ชีวิตมีคุณค่า จิตใจเบิกบาน และเจตจำนงในวาระสุดท้ายของชีวิต':['Understands what gives life meaning and joy, and wishes for the end of life.','ဘဝတန်ဖိုးရှိစေသည့်အရာ၊ ပျော်ရွှင်စေသည့်အရာနှင့် နောက်ဆုံးကာလဆန္ဒများကို နားလည်ရန်။'],
+'ระบุแหล่งบริการสุขภาพใกล้บ้านและวิธีการเดินทางไปรับบริการ':['Records nearby health services and how the person travels to them.','အနီးအနားရှိ ကျန်းမာရေးဝန်ဆောင်မှုနှင့် သွားလာနည်းကို မှတ်သည်။'],
+'ปันรัก ปันสุข':['Share love, share happiness','ချစ်ခြင်းမေတ္တာနှင့် ပျော်ရွှင်မှု မျှဝေခြင်း'],'แพลตฟอร์มระดมทุน':['Crowdfunding platform','ရန်ပုံငွေကောက်ခံရေးပလက်ဖောင်း'],'วิสาหกิจเพื่อสังคม · เชียงใหม่':['Social enterprise · Chiang Mai','လူမှုလုပ်ငန်းရှင် · ချင်းမိုင်'],
+'โครงการดูแลผู้สูงอายุยากไร้ที่ขาดโอกาส ร่วมกับผู้นำชุมชนและ อสม. ด้วยการเยี่ยมบ้าน ประเมินสุขภาพ มอบอาหาร ยาสามัญประจำบ้าน และปรับปรุงที่อยู่อาศัย (ขยายพื้นที่สู่ อ.แม่สอด จ.ตาก)':['A programme caring for disadvantaged older people with community leaders and village health volunteers: home visits, health checks, food, basic medicines and housing repairs (expanding to Mae Sot, Tak).','ရပ်ရွာခေါင်းဆောင်များနှင့် ကျေးရွာကျန်းမာရေးစေတနာ့ဝန်ထမ်းများနှင့်အတူ ဆင်းရဲနွမ်းပါးသော သက်ကြီးရွယ်အိုများကို စောင့်ရှောက်သည့်စီမံကိန်း - အိမ်လည်ပတ်ခြင်း၊ ကျန်းမာရေးစစ်ဆေးခြင်း၊ အစားအစာ၊ အခြေခံဆေးနှင့် အိမ်ပြုပြင်ခြင်း (မဲဆောက်၊ တာက်သို့ ချဲ့ထွင်)။'],
+'แพลตฟอร์มระดมทุนเพื่อโครงการเพื่อสังคม การบริจาคเดือนละ 350 บาท หรือ 4,200 บาทต่อปี ช่วยให้ผู้สูงอายุหนึ่งคนมีชีวิตที่ดีขึ้น':['A crowdfunding platform for social projects. Donating 350 baht a month (4,200 baht a year) improves the life of one older person.','လူမှုရေးစီမံကိန်းများအတွက် ရန်ပုံငွေကောက်ခံရေးပလက်ဖောင်း။ တစ်လ ဘတ် ၃၅၀ (တစ်နှစ် ၄,၂၀၀) လှူဒါန်းခြင်းဖြင့် သက်ကြီးရွယ်အိုတစ်ဦး၏ ဘဝကို တိုးတက်စေသည်။'],
+'เริ่มดำเนินงานตั้งแต่ปี 2558 ให้บริการดูแลผู้สูงอายุและผู้ป่วยที่บ้าน ทำงานร่วมกับมูลนิธิพัฒนางานผู้สูงอายุ':['Operating since 2015, providing home care for older people and patients, in partnership with the Foundation for Older Persons\' Development.','၂၀၁၅ ခုနှစ်မှစတင်၍ သက်ကြီးရွယ်အိုနှင့် လူနာများကို အိမ်တွင်စောင့်ရှောက်မှုပေးနေပြီး သက်ကြီးရွယ်အိုဖွံ့ဖြိုးရေးဖောင်ဒေးရှင်းနှင့် ပူးပေါင်းဆောင်ရွက်သည်။']};
+function trs(s){if(LANG=='th')return s;const i=LANG=='en'?0:1,k=s.trim(),w=x=>DICT[x]?DICT[x][i]:x;if(DICT[k])return s.replace(k,DICT[k][i]);
+ return s.replace(/^สวัสดี /,w('สวัสดี')+' ').replace(/^ฐานข้อมูลผู้สูงอายุ /,w('ฐานข้อมูลผู้สูงอายุ')+' ')
+ .replace(/ด้าน (\d): (.*?)( \(ในการเยี่ยม\))?$/,(x,a,b,c)=>`${i?'ဒိုမိန်း':'Domain'} ${a}: ${w(b)}${c?(i?' (လည်ပတ်စဉ်)':' (in visit)'):''}`)
+ .replace(/^(\S+ )?เยี่ยมบ้าน \(/,(x,p)=>(p||'')+w('เยี่ยมบ้าน')+' (').replace(/(\d+|\?) ปี/g,(x,a)=>a+(i?' နှစ်':' yrs'))}
+function trNode(n){if(n.nodeType==3){if(n._o===undefined)n._o=n.data;const v=trs(n._o);if(n.data!==v)n.data=v}
+ else if(n.nodeType==1&&n.tagName!='SCRIPT'&&n.tagName!='STYLE'){['placeholder','title'].forEach(a=>{if(n.hasAttribute(a)){if(n['_'+a]===undefined)n['_'+a]=n.getAttribute(a);n.setAttribute(a,trs(n['_'+a]))}});n.childNodes.forEach(trNode)}}
+new MutationObserver(ms=>ms.forEach(m=>m.addedNodes.forEach(trNode))).observe(document.body,{childList:true,subtree:true});
+function setLang(v){LANG=v;localStorage.lang=v;document.documentElement.lang=v;trNode(document.body)}
+function hdr(){$('#hd').innerHTML=`<img src="${img(CFG.COMPANY_LOGO)}" alt=""><b>INHOMESSS Home Visit</b><img src="${img(CFG.PROGRAM_LOGO)}" alt=""><select id="lang" onchange="setLang(this.value)">${Object.entries(LN).map(([k,v])=>`<option value="${k}" ${k==LANG?'selected':''}>${v}</option>`).join('')}</select>${S.user?`<button onclick="logout()">ออก</button>`:''}`}
 /* ===== CONFIG ===== */
 // After deploying Apps Script, paste the /exec URL here (recommended; keeps your Google Sheet private).
 // If left empty, the app reads the "Configs" tab via a public Sheet link instead.
@@ -112,7 +164,7 @@ const nm=(d,x)=>`d${d.id}_${x.k}`;
 function fld(d,x){const n=nm(d,x);if(x.t=='H')return`<h4>${x.l}</h4>`;let c='';
  if(x.t=='T')c=`<input name="${n}">`;else if(x.t=='N')c=`<input type="number" step="any" inputmode="decimal" name="${n}">`;else if(x.t=='D')c=`<input type="date" name="${n}">`;
  else if(x.t=='A')c=`<textarea rows="3" name="${n}"></textarea>`;
- else if(x.t=='S')c=`<select name="${n}"><option value="">-- เลือก --</option>${x.o.map(o=>`<option>${o}</option>`).join('')}</select>`;
+ else if(x.t=='S')c=`<select name="${n}"><option value="">-- เลือก --</option>${x.o.map(o=>`<option value="${o}">${o}</option>`).join('')}</select>`;
  else if(x.t=='C')c=x.o.map(o=>`<label class="o"><input type="checkbox" name="${n}" value="${o}">${o}</label>`).join('');
  else if(x.t=='R')c=x.o.map((o,i)=>`<label class="o"><input type="radio" name="${n}" value="${i+1}">${o}</label>`).join('');
  else if(x.t=='P')c=`<div class="ph"><input type="file" accept="image/*" capture="environment" name="${n}"><img hidden></div>`;
@@ -121,14 +173,14 @@ function collect(r,d){const o={};d.f.forEach(x=>{if(x.t=='H')return;const n=nm(d
  if(x.t=='C')o[x.k]=[...r.querySelectorAll(`[name="${n}"]:checked`)].map(e=>e.value);
  else if(x.t=='R'){const e=r.querySelector(`[name="${n}"]:checked`);o[x.k]=e?+e.value:''}
  else if(x.t=='P')o[x.k]=r._ph[n]||'';else o[x.k]=r.querySelector(`[name="${n}"]`).value});
- const e=r.querySelector('.res');o._result=e?e.innerText:'';return o}
+ const e=r.querySelector('.res');o._result=e?(e.dataset.th||''):'';return o}
 function showPh(r,n,u){r._ph[n]=u;const i=r.querySelector(`[name="${n}"]`).nextElementSibling;i.src=u;i.hidden=false}
 function fill(r,d,v){d.f.forEach(x=>{if(x.t=='H'||!v||v[x.k]==null||v[x.k]==='')return;const n=nm(d,x);let a=v[x.k];
  if(x.t=='C'){if(typeof a=='string')try{a=JSON.parse(a)}catch{a=[a]}r.querySelectorAll(`[name="${n}"]`).forEach(e=>e.checked=a.includes(e.value))}
  else if(x.t=='R'){const e=r.querySelector(`[name="${n}"][value="${a}"]`);if(e)e.checked=true}
  else if(x.t=='P')showPh(r,n,a);else r.querySelector(`[name="${n}"]`).value=x.t=='D'?String(a).slice(0,10):a})}
 function mk(d,v){const r=document.createElement('div');r._ph={};r.innerHTML=d.f.map(x=>fld(d,x)).join('')+(d.calc?'<div class="res"></div>':'');if(v)fill(r,d,v);
- const up=()=>{if(d.calc)r.querySelector('.res').innerHTML=d.calc(collect(r,d))};r.addEventListener('input',up);
+ const up=()=>{if(d.calc){const e=r.querySelector('.res'),h=d.calc(collect(r,d));e.innerHTML=h;e.dataset.th=h.replace(/<br>/g,' | ')}};r.addEventListener('input',up);
  r.addEventListener('change',e=>{const el=e.target;if(el.type!='file'||!el.files[0])return;const im=new Image();im.onload=()=>{const s=Math.min(1,1024/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=im.width*s;c.height=im.height*s;c.getContext('2d').drawImage(im,0,0,c.width,c.height);showPh(r,el.name,c.toDataURL('image/jpeg',.7))};im.src=URL.createObjectURL(el.files[0])});up();return r}
 async function ups(o){if(Object.values(o).some(v=>typeof v=='string'&&v.startsWith('data:')))busy(1,'กำลังอัปโหลดรูปภาพ…');for(const k in o)if(typeof o[k]=='string'&&o[k].startsWith('data:'))o[k]=await api('upload',{data:o[k].split(',')[1],name:k+'_'+Date.now()+'.jpg'});return o}
 const filled=o=>Object.keys(o).some(k=>k!='_result'&&o[k]!==''&&!(Array.isArray(o[k])&&!o[k].length));
@@ -141,12 +193,21 @@ async function needE(f){if(!ELD.length||f)ELD=await api('listElders')}
 const eSel=id=>`<select id="el"><option value="">-- เลือกผู้สูงอายุ --</option>${ELD.map(e=>`<option value="${e.id}" ${e.id==id?'selected':''}>${esc(e.name)} (${age(e.birth)||'?'} ปี)</option>`).join('')}</select>`;
 const M=$('#m');
 async function go(){const h=(location.hash||'#home').slice(1).split('/'),p=h[0];
- $('#hd').innerHTML=`<img src="${img(CFG.COMPANY_LOGO)}" alt=""><b>INHOMESSS Home Visit</b><img src="${img(CFG.PROGRAM_LOGO)}" alt="">${S.user?`<button onclick="logout()">ออก</button>`:''}`;
+ hdr();
  $('#nv').innerHTML=S.token?[['home','🏠','หน้าแรก'],['visit','📝','เยี่ยมบ้าน'],['tools','🧰','เครื่องมือ'],['elders','👵','ผู้สูงอายุ'],['about','ℹ️','เกี่ยวกับ']].map(a=>`<a href="#${a[0]}">${a[1]}<span>${a[2]}</span></a>`).join(''):'';
  if(!S.token)return login();
  M.innerHTML='<div class="card"><div class="bar"><i></i></div><p>⏳ กำลังโหลดข้อมูลจาก Google Sheets… (อาจใช้เวลา 5–20 วินาที)</p></div>';try{await({home,visit,tools,tool,elders,elder,eform,about,users}[p]||home)(h[1])}catch(e){M.innerHTML=`<div class="card">⚠️ ${esc(e.message)}<br><button class="p" onclick="go()">ลองใหม่</button></div>`}}
-function login(){M.innerHTML=`<div class="login card"><img src="${img(CFG.COMPANY_LOGO)}"><img src="${img(CFG.PROGRAM_LOGO)}"><h2>เข้าสู่ระบบ</h2><input id="u" placeholder="ชื่อผู้ใช้" autocapitalize="off"><br><br><input id="pw" type="password" placeholder="รหัสผ่าน"><br><button class="p" id="lg">เข้าสู่ระบบ</button></div>`;
- $('#lg').onclick=async()=>{busy(1,'กำลังเข้าสู่ระบบ…');try{const r=await api('login',{username:$('#u').value.trim(),password:$('#pw').value});S=r;localStorage.tok=r.token;localStorage.usr=JSON.stringify(r.user);location.hash='home';go()}catch(e){toast(e.message)}busy(0)}}
+function login(mode='in',em=''){
+ const lg=`<img src="${img(CFG.COMPANY_LOGO)}"><img src="${img(CFG.PROGRAM_LOGO)}">`,I=(id,ph,ty='text')=>`<input id="${id}" type="${ty}" placeholder="${ph}" autocapitalize="off"><br><br>`,C=h=>M.innerHTML=`<div class="login card">${lg}${h}</div>`;
+ if(mode=='up')C(`<h2>สมัครสมาชิก</h2>${I('rn','ชื่อ-สกุล')}${I('re','อีเมล','email')}${I('rp','รหัสผ่าน (อย่างน้อย 8 ตัวอักษร)','password')}${I('rq','ยืนยันรหัสผ่าน','password')}<button class="p" id="b1">สมัครสมาชิก</button><p><a href="#" id="b2">มีบัญชีแล้ว? เข้าสู่ระบบ</a></p>`);
+ else if(mode=='ver')C(`<h2>ยืนยันอีเมล</h2><p>เราส่งรหัส 6 หลักไปที่</p><b>${esc(em)}</b><br><br>${I('vc','รหัสยืนยัน 6 หลัก')}<button class="p" id="b1">ยืนยัน</button><p><a href="#" id="b3">ส่งรหัสอีกครั้ง</a> · <a href="#" id="b2">กลับ</a></p>`);
+ else C(`<h2>เข้าสู่ระบบ</h2>${I('u','อีเมลหรือชื่อผู้ใช้')}${I('pw','รหัสผ่าน','password')}<button class="p" id="b1">เข้าสู่ระบบ</button><p><a href="#" id="b2">สมัครสมาชิกใหม่</a></p>`);
+ const act=async(f,msg)=>{busy(1,msg);try{await f()}catch(e){toast(e.message)}busy(0)},v=id=>$('#'+id).value.trim();
+ $('#b2').onclick=e=>{e.preventDefault();login(mode=='in'?'up':'in')};M.querySelectorAll('input').forEach(x=>x.onkeydown=e=>e.key=='Enter'&&$('#b1').click());
+ if(mode=='in')$('#b1').onclick=()=>act(async()=>{try{const r=await api('login',{username:v('u'),password:$('#pw').value});S=r;localStorage.tok=r.token;localStorage.usr=JSON.stringify(r.user);location.hash='home';go()}catch(e){if(e.message=='EMAIL_UNVERIFIED'){toast('กรุณายืนยันอีเมลก่อน');login('ver',v('u').toLowerCase())}else throw e}},'กำลังเข้าสู่ระบบ…');
+ if(mode=='up')$('#b1').onclick=()=>act(async()=>{if($('#rp').value!=$('#rq').value)throw Error('รหัสผ่านไม่ตรงกัน');await api('register',{name:v('rn'),email:v('re'),password:$('#rp').value});toast('ส่งรหัสยืนยันไปที่อีเมลแล้ว');login('ver',v('re').toLowerCase())},'กำลังสมัครสมาชิก…');
+ if(mode=='ver'){$('#b1').onclick=()=>act(async()=>{const r=await api('verify',{email:em,code:v('vc')});toast(r.status=='active'?'ยืนยันอีเมลสำเร็จ เข้าสู่ระบบได้เลย':'ยืนยันอีเมลแล้ว รอผู้ดูแลอนุมัติบัญชี');login('in')},'กำลังตรวจสอบ…');
+  $('#b3').onclick=e=>{e.preventDefault();act(async()=>{await api('resend',{email:em});toast('ส่งรหัสใหม่แล้ว')},'กำลังส่งอีเมล…')}}}
 function home(){M.innerHTML=`<h2>สวัสดี ${esc(S.user.name)} 👋</h2><div class="grid">
 <a class="tile" href="#visit"><i>📝</i><b>Home Care Visit</b><small>แบบบันทึกการเยี่ยมบ้านผู้สูงอายุ</small></a>
 <a class="tile" href="#tools"><i>🧰</i><b>INHOMESSS tools</b><small>แบบบันทึกแต่ละด้าน 9 ด้าน</small></a>
@@ -179,7 +240,8 @@ ${B('Adopt A Granny','ปันรัก ปันสุข','โครงกา
 ${B('TaeJai (เทใจ)','แพลตฟอร์มระดมทุน','แพลตฟอร์มระดมทุนเพื่อโครงการเพื่อสังคม การบริจาคเดือนละ 350 บาท หรือ 4,200 บาทต่อปี ช่วยให้ผู้สูงอายุหนึ่งคนมีชีวิตที่ดีขึ้น')}
 ${B('Buddy HomeCare','วิสาหกิจเพื่อสังคม · เชียงใหม่','เริ่มดำเนินงานตั้งแต่ปี 2558 ให้บริการดูแลผู้สูงอายุและผู้ป่วยที่บ้าน ทำงานร่วมกับมูลนิธิพัฒนางานผู้สูงอายุ')}
 <div class="card"><h4>INHOMESSS</h4>Immobility · Nutrition · Housing · Other people · Medication · Examination · Safety · Spiritual health · Services</div>`}
-async function users(){const l=await api('listUsers');M.innerHTML=`<h2>ผู้ใช้งาน</h2><div class="card"><input id="un" placeholder="username"><br><br><input id="nn" placeholder="ชื่อ-สกุล"><br><br><input id="pp" type="password" placeholder="รหัสผ่านใหม่"><br><br><select id="rr"><option value="staff">staff</option><option value="admin">admin</option></select><button class="p" id="sv">บันทึก/แก้ไขผู้ใช้</button></div>${l.map(u=>`<div class="card">${esc(u.username)} · ${esc(u.name)} · ${u.role}</div>`).join('')}`;
- $('#sv').onclick=async()=>{try{await api('saveUser',{username:$('#un').value,name:$('#nn').value,password:$('#pp').value,role:$('#rr').value});toast('บันทึกแล้ว');users()}catch(e){toast(e.message)}}}
-window.onhashchange=go;addEventListener('unhandledrejection',e=>toast(String(e.reason?.message||e.reason)));loadCfg().then(ok=>ok&&go());
+async function users(){const l=await api('listUsers');M.innerHTML=`<h2>ผู้ใช้งาน</h2><div class="card"><input id="un" placeholder="อีเมลหรือชื่อผู้ใช้"><br><br><input id="nn" placeholder="ชื่อ-สกุล"><br><br><input id="pp" type="password" placeholder="รหัสผ่าน"><br><br><select id="rr"><option value="staff">staff</option><option value="admin">admin</option></select><button class="p" id="sv">บันทึก/แก้ไขผู้ใช้</button></div>${l.map(u=>`<div class="card row"><div style="flex:1"><b>${esc(u.name)}</b><br><small>${esc(u.email||u.username)} · ${esc(u.role)} · <span class="chip">${esc(u.status||'active')}</span></small></div>${['pending','unverified','disabled'].includes(u.status)?`<button class="p s" data-u="${esc(u.username)}" data-s="active">อนุมัติ</button>`:(u.username!=S.user.username?`<button class="p g" data-u="${esc(u.username)}" data-s="disabled">ปิดใช้งาน</button>`:'')}</div>`).join('')}`;
+ M.querySelectorAll('[data-u]').forEach(b=>b.onclick=async()=>{try{await api('saveUser',{username:b.dataset.u,status:b.dataset.s});users()}catch(e){toast(e.message)}});
+ $('#sv').onclick=async()=>{try{await api('saveUser',{username:$('#un').value.trim().toLowerCase(),name:$('#nn').value,password:$('#pp').value,role:$('#rr').value,status:'active'});toast('บันทึกแล้ว');users()}catch(e){toast(e.message)}}}
+window.onhashchange=go;addEventListener('unhandledrejection',e=>toast(String(e.reason?.message||e.reason)));hdr();loadCfg().then(ok=>ok&&go());
 </script></body></html>
