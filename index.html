@@ -27,10 +27,14 @@ nav a{flex:1;text-align:center;padding:8px 0;font-size:11px;color:var(--mut);tex
 .ph img{max-width:100%;max-height:160px;border-radius:10px;margin-top:6px}.av{width:48px;height:48px;border-radius:50%;object-fit:cover;background:var(--bd)}
 .row{display:flex;gap:12px;align-items:center}details{border:1px solid var(--bd);border-radius:12px;padding:8px 12px;margin:8px 0;background:#fff}summary{font-weight:600;cursor:pointer}
 #toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#23323a;color:#fff;padding:10px 18px;border-radius:20px;display:none;z-index:9}
-#busy{position:fixed;inset:0;background:#fff9;display:none;align-items:center;justify-content:center;z-index:8;font-weight:700}
+#busy{position:fixed;inset:0;background:#fffc;display:none;flex-direction:column;gap:12px;align-items:center;justify-content:center;text-align:center;padding:20px;z-index:8;font-weight:700}
+#busy small{font-weight:400;color:var(--mut);max-width:320px}
+#pg{position:fixed;top:0;left:0;right:0;height:4px;z-index:20;display:none;overflow:hidden;background:#f28f3b33}#pg.on{display:block}#pg i{display:block;height:100%;width:35%;background:var(--acc);animation:mv 1s infinite ease-in-out}
+.bar{width:min(320px,80vw);height:10px;background:var(--bd);border-radius:6px;overflow:hidden;margin:10px auto}.bar i{display:block;height:100%;width:40%;background:var(--pri);border-radius:6px;animation:mv 1.1s infinite ease-in-out}
+.bar.d i{animation:none;transition:width .4s}@keyframes mv{0%{margin-left:-40%}100%{margin-left:100%}}
 .login{max-width:360px;margin:8vh auto;text-align:center}.login img{height:70px;margin:6px}
 </style></head><body>
-<header id="hd"></header><main id="m"></main><nav id="nv"></nav><div id="toast"></div><div id="busy">กำลังบันทึก…</div>
+<header id="hd"></header><main id="m"></main><nav id="nv"></nav><div id="pg"><i></i></div><div id="toast"></div><div id="busy"><div id="bt">กำลังบันทึก…</div><div class="bar"><i></i></div><small id="bh"></small></div>
 <script>
 /* ===== CONFIG ===== */
 // After deploying Apps Script, paste the /exec URL here (recommended; keeps your Google Sheet private).
@@ -42,14 +46,26 @@ PROGRAM_LOGO:"https://drive.google.com/file/d/1gXLL7mOVJ33QQ_AznoS_yy1KSXzT5eZF/
 let CFG={...DEF},S={token:localStorage.tok||'',user:JSON.parse(localStorage.usr||'null')},ELD=[],LOC={};
 const $=s=>document.querySelector(s),esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const img=u=>u&&u.includes('drive.google.com/file')?`https://drive.google.com/thumbnail?id=${(u.match(/[-\w]{25,}/)||[])[0]}&sz=w400`:u||'';
-const toast=t=>{const e=$('#toast');e.textContent=t;e.style.display='block';setTimeout(()=>e.style.display='none',2800)},busy=b=>$('#busy').style.display=b?'flex':'none';
-async function loadCfg(){try{
- if(BOOT_URL){const r=await(await fetch(BOOT_URL+'?action=config')).json();Object.assign(CFG,r.data);CFG.APPS_SCRIPT_URL=BOOT_URL}
- else{const t=await(await fetch(`https://docs.google.com/spreadsheets/d/${DEF.SHEET_ID}/gviz/tq?tqx=out:csv&sheet=Configs`)).text();
-  t.split('\n').forEach(l=>{const m=l.match(/^"((?:[^"]|"")*)","((?:[^"]|"")*)"/);if(m&&m[2])CFG[m[1]]=m[2].replace(/""/g,'"')})}
-}catch(e){console.warn('config',e)}}
+const toast=t=>{const e=$('#toast');e.textContent=t;e.style.display='block';clearTimeout(e._t);e._t=setTimeout(()=>e.style.display='none',5000)};
+let bto;const busy=(b,t='กำลังบันทึก…')=>{clearTimeout(bto);$('#bh').textContent='';$('#busy').style.display=b?'flex':'none';if(b){$('#bt').textContent=t;bto=setTimeout(()=>$('#bh').textContent='ใช้เวลานานกว่าปกติ… Apps Script อาจกำลังเริ่มทำงานครั้งแรก หรืออินเทอร์เน็ตช้า (รอได้ถึง 30 วินาที)',7000)}};
+const LG=[];let inflight=0;
+function step(p,t){LG.push(t);M.innerHTML=`<div class="card login"><h2>กำลังเริ่มระบบ…</h2><div class="bar d"><i style="width:${p}%"></i></div><p><b>${p}%</b> · ${t}</p><small style="color:var(--mut);display:block;text-align:left">${LG.map((x,i)=>(i<LG.length-1?'✔ ':'⏳ ')+esc(x)).join('<br>')}</small></div>`}
+function fail(msg,url){M.innerHTML=`<div class="card"><h2>⚠️ เชื่อมต่อระบบไม่สำเร็จ</h2><p><b>สาเหตุ:</b> ${esc(msg)}</p><p><b>ตรวจสอบ:</b></p><ol><li>Apps Script: Deploy → Web app → Execute as <b>Me</b>, Who has access <b>Anyone</b></li><li>ใช้ URL ที่ลงท้าย <code>/exec</code> (ไม่ใช่ /dev)</li><li>รันฟังก์ชัน <code>setup()</code> แล้ว และมีแท็บ Configs</li><li>แก้ Code.gs แล้วต้อง Deploy → <b>New version</b></li><li>ลองเปิด URL + <code>?action=config</code> ในเบราว์เซอร์ ต้องเห็นข้อความ JSON</li></ol><label>Apps Script URL (/exec)</label><input id="su" value="${esc(url||'')}" placeholder="https://script.google.com/macros/s/.../exec"><button class="p" id="sr">บันทึก URL และลองใหม่</button><button class="p g" onclick="location.reload()">ลองใหม่</button><small style="display:block;margin-top:10px;color:var(--mut)">${LG.map(esc).join('<br>')}</small></div>`;$('#pg').classList.remove('on');$('#sr').onclick=()=>{localStorage.url=$('#su').value.trim();location.reload()};return false}
+async function jf(u,o,ms=30000){const c=new AbortController(),t=setTimeout(()=>c.abort(),ms);inflight++;$('#pg').classList.add('on');
+ try{return await fetch(u,{...o,signal:c.signal})}catch(e){throw Error(e.name=='AbortError'?`หมดเวลา ${ms/1000} วินาที – เซิร์ฟเวอร์ไม่ตอบกลับ`:'เชื่อมต่อไม่ได้ ('+e.message+') – ตรวจอินเทอร์เน็ต / URL / สิทธิ์ Anyone')}
+ finally{clearTimeout(t);if(!--inflight)$('#pg').classList.remove('on')}}
+async function loadCfg(){const boot=BOOT_URL||localStorage.url||'';step(10,'เริ่มต้นระบบ');
+ if(boot){try{step(30,'กำลังเชื่อมต่อ Apps Script…');const res=await jf(boot+'?action=config',{},30000);step(65,'กำลังอ่านแท็บ Configs จาก Google Sheets…');
+   let r;try{r=await res.json()}catch{throw Error('URL ไม่ตอบกลับเป็น JSON (ตรวจสิทธิ์ Anyone และ URL แบบ /exec)')}
+   if(!r.ok)throw Error(r.error);Object.assign(CFG,r.data);CFG.APPS_SCRIPT_URL=boot;step(100,'พร้อมใช้งาน ✔');return true}catch(e){return fail(e.message,boot)}}
+ try{step(30,'กำลังอ่านแท็บ Configs (ผ่านลิงก์สาธารณะของ Sheet)…');const res=await jf(`https://docs.google.com/spreadsheets/d/${DEF.SHEET_ID}/gviz/tq?tqx=out:csv&sheet=Configs`,{},20000);const t=await res.text();
+  t.split('\n').forEach(l=>{const m=l.match(/^"((?:[^"]|"")*)","((?:[^"]|"")*)"/);if(m&&m[2])CFG[m[1]]=m[2].replace(/""/g,'"')});step(70,'อ่านค่า Configs แล้ว')}
+ catch(e){return fail('อ่าน Configs โดยตรงไม่ได้ (Sheet เป็นส่วนตัว) – '+e.message,'')}
+ if(!CFG.APPS_SCRIPT_URL)return fail('ยังไม่มีค่า APPS_SCRIPT_URL ใน Configs (หรือ Sheet ไม่ได้แชร์) – วาง URL /exec ด้านล่างหรือกำหนด BOOT_URL ใน index.html','');
+ step(100,'พร้อมใช้งาน ✔');return true}
 async function api(action,d={}){if(!CFG.APPS_SCRIPT_URL)throw Error('ยังไม่ได้ตั้งค่า APPS_SCRIPT_URL');
- const r=await(await fetch(CFG.APPS_SCRIPT_URL,{method:'POST',body:JSON.stringify({action,token:S.token,...d})})).json();
+ const res=await jf(CFG.APPS_SCRIPT_URL,{method:'POST',body:JSON.stringify({action,token:S.token,...d})},action=='upload'?60000:30000);
+ let r;try{r=await res.json()}catch{throw Error('เซิร์ฟเวอร์ตอบกลับไม่ถูกต้อง – ตรวจการ Deploy (Anyone, /exec, New version)')}
  if(!r.ok){if(r.error=='SESSION'){logout();throw Error('หมดเวลา กรุณาเข้าสู่ระบบใหม่')}throw Error(r.error)}return r.data}
 function logout(){localStorage.removeItem('tok');localStorage.removeItem('usr');S={token:'',user:null};go()}
 
@@ -114,7 +130,7 @@ function fill(r,d,v){d.f.forEach(x=>{if(x.t=='H'||!v||v[x.k]==null||v[x.k]==='')
 function mk(d,v){const r=document.createElement('div');r._ph={};r.innerHTML=d.f.map(x=>fld(d,x)).join('')+(d.calc?'<div class="res"></div>':'');if(v)fill(r,d,v);
  const up=()=>{if(d.calc)r.querySelector('.res').innerHTML=d.calc(collect(r,d))};r.addEventListener('input',up);
  r.addEventListener('change',e=>{const el=e.target;if(el.type!='file'||!el.files[0])return;const im=new Image();im.onload=()=>{const s=Math.min(1,1024/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=im.width*s;c.height=im.height*s;c.getContext('2d').drawImage(im,0,0,c.width,c.height);showPh(r,el.name,c.toDataURL('image/jpeg',.7))};im.src=URL.createObjectURL(el.files[0])});up();return r}
-async function ups(o){for(const k in o)if(typeof o[k]=='string'&&o[k].startsWith('data:'))o[k]=await api('upload',{data:o[k].split(',')[1],name:k+'_'+Date.now()+'.jpg'});return o}
+async function ups(o){if(Object.values(o).some(v=>typeof v=='string'&&v.startsWith('data:')))busy(1,'กำลังอัปโหลดรูปภาพ…');for(const k in o)if(typeof o[k]=='string'&&o[k].startsWith('data:'))o[k]=await api('upload',{data:o[k].split(',')[1],name:k+'_'+Date.now()+'.jpg'});return o}
 const filled=o=>Object.keys(o).some(k=>k!='_result'&&o[k]!==''&&!(Array.isArray(o[k])&&!o[k].length));
 function fmt(id,o){const d=DOM.find(x=>x.id==id);if(!d)return'';return d.f.filter(x=>x.t!='H'&&o[x.k]!==undefined&&o[x.k]!==''&&!(Array.isArray(o[x.k])&&!o[x.k].length)).map(x=>`<div><b>${x.l}</b>: ${x.t=='P'?`<a href="${o[x.k]}" target="_blank">📷 ดูรูป</a>`:esc(Array.isArray(o[x.k])?o[x.k].join(', '):x.t=='R'?x.o[o[x.k]-1]:o[x.k])}</div>`).join('')+(o._result?`<div class="res">${esc(o._result)}</div>`:'')}
 
@@ -128,9 +144,9 @@ async function go(){const h=(location.hash||'#home').slice(1).split('/'),p=h[0];
  $('#hd').innerHTML=`<img src="${img(CFG.COMPANY_LOGO)}" alt=""><b>INHOMESSS Home Visit</b><img src="${img(CFG.PROGRAM_LOGO)}" alt="">${S.user?`<button onclick="logout()">ออก</button>`:''}`;
  $('#nv').innerHTML=S.token?[['home','🏠','หน้าแรก'],['visit','📝','เยี่ยมบ้าน'],['tools','🧰','เครื่องมือ'],['elders','👵','ผู้สูงอายุ'],['about','ℹ️','เกี่ยวกับ']].map(a=>`<a href="#${a[0]}">${a[1]}<span>${a[2]}</span></a>`).join(''):'';
  if(!S.token)return login();
- try{await({home,visit,tools,tool,elders,elder,eform,about,users}[p]||home)(h[1])}catch(e){M.innerHTML=`<div class="card">⚠️ ${esc(e.message)}</div>`}}
+ M.innerHTML='<div class="card"><div class="bar"><i></i></div><p>⏳ กำลังโหลดข้อมูลจาก Google Sheets… (อาจใช้เวลา 5–20 วินาที)</p></div>';try{await({home,visit,tools,tool,elders,elder,eform,about,users}[p]||home)(h[1])}catch(e){M.innerHTML=`<div class="card">⚠️ ${esc(e.message)}<br><button class="p" onclick="go()">ลองใหม่</button></div>`}}
 function login(){M.innerHTML=`<div class="login card"><img src="${img(CFG.COMPANY_LOGO)}"><img src="${img(CFG.PROGRAM_LOGO)}"><h2>เข้าสู่ระบบ</h2><input id="u" placeholder="ชื่อผู้ใช้" autocapitalize="off"><br><br><input id="pw" type="password" placeholder="รหัสผ่าน"><br><button class="p" id="lg">เข้าสู่ระบบ</button></div>`;
- $('#lg').onclick=async()=>{busy(1);try{const r=await api('login',{username:$('#u').value.trim(),password:$('#pw').value});S=r;localStorage.tok=r.token;localStorage.usr=JSON.stringify(r.user);location.hash='home';go()}catch(e){toast(e.message)}busy(0)}}
+ $('#lg').onclick=async()=>{busy(1,'กำลังเข้าสู่ระบบ…');try{const r=await api('login',{username:$('#u').value.trim(),password:$('#pw').value});S=r;localStorage.tok=r.token;localStorage.usr=JSON.stringify(r.user);location.hash='home';go()}catch(e){toast(e.message)}busy(0)}}
 function home(){M.innerHTML=`<h2>สวัสดี ${esc(S.user.name)} 👋</h2><div class="grid">
 <a class="tile" href="#visit"><i>📝</i><b>Home Care Visit</b><small>แบบบันทึกการเยี่ยมบ้านผู้สูงอายุ</small></a>
 <a class="tile" href="#tools"><i>🧰</i><b>INHOMESSS tools</b><small>แบบบันทึกแต่ละด้าน 9 ด้าน</small></a>
@@ -142,7 +158,7 @@ async function visit(){await needE();M.innerHTML=`<h2>แบบบันทึ�
  navigator.geolocation?.getCurrentPosition(p=>{LOC={lat:p.coords.latitude,lng:p.coords.longitude};$('#loc').textContent=`${LOC.lat.toFixed(5)}, ${LOC.lng.toFixed(5)}`},()=>$('#loc').textContent='ไม่สามารถอ่านตำแหน่งได้');
  const ia=mk(IDEA);$('#ia').append(ia);const rs={};DOM.forEach(d=>{const de=document.createElement('details');de.innerHTML=`<summary>${d.ico} ${d.id}. ${d.th} (${d.en})</summary>`;rs[d.id]=mk(d);de.append(rs[d.id]);$('#ds').append(de)});
  $('#sv').onclick=async()=>{const id=$('#el').value;if(!id)return toast('กรุณาเลือกผู้สูงอายุ');busy(1);try{const as={};for(const d of DOM){const o=collect(rs[d.id],d);if(filled(o))as[d.id]=await ups(o)}
-  await api('saveVisit',{elderId:id,lat:LOC.lat||'',lng:LOC.lng||'',idea:collect(ia,IDEA),assess:as});toast('บันทึกแล้ว ✔');location.hash='elder/'+id}catch(e){toast(e.message)}busy(0)}}
+  busy(1,'กำลังบันทึกลง Google Sheets…');await api('saveVisit',{elderId:id,lat:LOC.lat||'',lng:LOC.lng||'',idea:collect(ia,IDEA),assess:as});toast('บันทึกแล้ว ✔');location.hash='elder/'+id}catch(e){toast(e.message)}busy(0)}}
 function tools(){M.innerHTML=`<h2>INHOMESSS tools</h2><div class="grid">${DOM.map(d=>`<a class="tile" href="#tool/${d.id}"><i>${d.ico}</i><b>${d.id}. ${d.th}</b><small>${d.en}</small></a>`).join('')}</div>`}
 async function tool(id){const d=DOM.find(x=>x.id==id);await needE();M.innerHTML=`<h2>${d.ico} ${d.id}. ${d.th} (${d.en})</h2><div class="card"><h4>Overview</h4><p>${d.intro}</p><h4>Assessment tools</h4>${d.tools.map(t=>`<span class="chip">${t}</span>`).join('')}</div>
 <div class="card"><h4>บันทึกการประเมิน</h4><label>ผู้สูงอายุ</label>${eSel()}<div id="fm"></div><button class="p s" id="sv">💾 บันทึก</button></div>`;
@@ -151,7 +167,7 @@ async function elders(){await needE(1);const draw=q=>$('#lst').innerHTML=ELD.fil
  M.innerHTML=`<h2>ฐานข้อมูลผู้สูงอายุ (${ELD.length})</h2><input id="q" placeholder="ค้นหาชื่อ / เลขบัตร / HN"><a class="p" href="#eform/new">+ เพิ่มผู้สูงอายุ</a><div id="lst"></div>`;draw('');$('#q').oninput=e=>draw(e.target.value)}
 async function elder(id){await needE();const e=ELD.find(x=>x.id==id);if(!e)throw Error('ไม่พบข้อมูล');const hs=await api('history',{elderId:id});
  const pr=Array.isArray(e.problems)?e.problems:(()=>{try{return JSON.parse(e.problems)}catch{return[]}})();
- const items=[...hs.visits.map(v=>({d:v.date,h:`📝 เยี่ยมบ้าน (${esc(v.user)})`,b:Object.entries(pj(v.idea)).filter(([k,x])=>x&&k!='_result').map(([k,x])=>`<div><b>${IDEA.f.find(f=>f.k==k)?.l||k}</b>: ${esc(x)}</div>`).join(''),vid:v.id}),...hs.assess.map(a=>({d:a.date,h:`${DOM[a.domain-1].ico} ด้าน ${a.domain}: ${DOM[a.domain-1].th}${a.visitId?' (ในการเยี่ยม)':''}`,b:fmt(a.domain,pj(a.data))}))].sort((a,b)=>b.d>a.d?1:-1);
+ const items=[...hs.visits.map(v=>({d:v.date,h:`📝 เยี่ยมบ้าน (${esc(v.user)})`,b:Object.entries(pj(v.idea)).filter(([k,x])=>x&&k!='_result').map(([k,x])=>`<div><b>${IDEA.f.find(f=>f.k==k)?.l||k}</b>: ${esc(x)}</div>`).join(''),vid:v.id})),...hs.assess.map(a=>({d:a.date,h:`${DOM[a.domain-1].ico} ด้าน ${a.domain}: ${DOM[a.domain-1].th}${a.visitId?' (ในการเยี่ยม)':''}`,b:fmt(a.domain,pj(a.data))}))].sort((a,b)=>b.d>a.d?1:-1);
  M.innerHTML=`<div class="card row"><img class="av" style="width:80px;height:80px" src="${esc(e.photo)}"><div><h2 style="margin:0">${esc(e.name)}</h2>${age(e.birth)||'?'} ปี · HN ${esc(e.hn)||'-'}<br>${esc(e.phone)}</div></div>
  <div class="card">📍 ${esc(e.addr)}<br>สิทธิ์: ${esc(e.rights)||'-'}<br>บัตร: ${esc(e.cid)||'-'}<br>${pr.map(p=>`<span class="chip">${esc(p)}</span>`).join('')}</div>
  <a class="p" href="#eform/${id}">✏️ แก้ไข</a><a class="p s" href="#tools">+ ประเมินด้านใดด้านหนึ่ง</a><h2>ประวัติ</h2>${items.map(i=>`<details><summary>${i.h} · ${new Date(i.d).toLocaleDateString('th-TH')}</summary>${i.b||'-'}</details>`).join('')||'<p>ยังไม่มีประวัติ</p>'}`}
@@ -165,5 +181,5 @@ ${B('Buddy HomeCare','วิสาหกิจเพื่อสังคม · 
 <div class="card"><h4>INHOMESSS</h4>Immobility · Nutrition · Housing · Other people · Medication · Examination · Safety · Spiritual health · Services</div>`}
 async function users(){const l=await api('listUsers');M.innerHTML=`<h2>ผู้ใช้งาน</h2><div class="card"><input id="un" placeholder="username"><br><br><input id="nn" placeholder="ชื่อ-สกุล"><br><br><input id="pp" type="password" placeholder="รหัสผ่านใหม่"><br><br><select id="rr"><option value="staff">staff</option><option value="admin">admin</option></select><button class="p" id="sv">บันทึก/แก้ไขผู้ใช้</button></div>${l.map(u=>`<div class="card">${esc(u.username)} · ${esc(u.name)} · ${u.role}</div>`).join('')}`;
  $('#sv').onclick=async()=>{try{await api('saveUser',{username:$('#un').value,name:$('#nn').value,password:$('#pp').value,role:$('#rr').value});toast('บันทึกแล้ว');users()}catch(e){toast(e.message)}}}
-window.onhashchange=go;loadCfg().then(go);
+window.onhashchange=go;addEventListener('unhandledrejection',e=>toast(String(e.reason?.message||e.reason)));loadCfg().then(ok=>ok&&go());
 </script></body></html>
