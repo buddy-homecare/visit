@@ -39,6 +39,20 @@ nav a{flex:1;text-align:center;padding:8px 0;font-size:11px;color:var(--mut);tex
 .pop{display:flex;gap:8px;align-items:center;min-width:200px}.leaflet-popup-content a.pop{color:var(--tx);text-decoration:none}.leaflet-popup-content a.p{color:#fff;margin:6px 0 0}.ab{display:inline-block;color:#d64545;margin-right:6px;font-size:15px}
 .dot{display:inline-block;width:14px;height:14px;border-radius:50%;border:4px solid;vertical-align:middle;margin-right:4px}.leaflet-container{font-family:var(--font)}
 .tg{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:10px}.tr{display:grid;grid-template-columns:96px 1fr 58px;align-items:center;gap:6px;font-size:12.5px;margin:5px 0}.tb{height:8px;background:var(--bd);border-radius:6px;overflow:hidden}.fl{display:block;height:100%}.sc{float:right;font-size:12px}.login img{height:70px;margin:6px}
+
+.p.g{background:#fff;color:var(--pri);border:1px solid var(--pri)}.p.s{background:var(--acc);color:#fff}
+label.p{background:var(--pri);color:#fff;border-radius:12px;padding:11px 18px;font-weight:600;cursor:pointer;margin:6px 6px 0 0;display:inline-block}
+.hero{width:100%;border-radius:20px;display:block;margin:6px 0 12px;box-shadow:0 2px 8px #0002}
+.hello{display:flex;align-items:center;gap:12px}.hello h2{flex:1;margin:.2em 0}.hello a{text-decoration:none}
+.me{width:68px;height:68px;border-radius:50%;object-fit:cover;border:3px solid #fff;box-shadow:0 0 0 2px var(--bd);background:var(--bd);display:flex;align-items:center;justify-content:center;color:var(--mut);font-size:28px}
+.opts{display:flex;flex-wrap:wrap;gap:2px 18px}.opts.v{flex-direction:column}
+.dw canvas{width:100%;max-width:420px;aspect-ratio:1;touch-action:none;background:#fff;border:2px dashed var(--pri);border-radius:14px;display:block;cursor:crosshair}
+.dw .wp{max-height:140px;border-radius:10px;margin-top:6px}.dw .tb2{display:flex;flex-wrap:wrap}
+.st{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:8px 0}.st div{background:#fff;border:1px solid var(--bd);border-radius:14px;padding:8px 4px;text-align:center}.st b{display:block;font-size:22px;color:var(--pri)}.st small{color:var(--mut)}
+.uc{display:inline-flex;align-items:center;gap:4px;background:#fdebd9;border-radius:20px;padding:2px 10px 2px 2px;margin:3px 6px 3px 0;font-size:13px}.uc img{width:22px;height:22px;border-radius:50%;object-fit:cover}.uc i{margin-left:6px}
+.me-dot{width:18px;height:18px;border-radius:50%;background:#1a73e8;border:3px solid #fff;box-shadow:0 0 0 6px #1a73e844}
+.fb{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0;align-items:center}.fb select{flex:1;min-width:130px;width:auto}
+.pf{width:110px;height:110px;border-radius:50%;object-fit:cover;display:block;margin:auto;border:3px solid var(--bd)}
 </style></head><body>
 <header id="hd"></header><main id="m"></main><nav id="nv"></nav><div id="pg"><i></i></div><div id="toast"></div><div id="busy"><div id="bt">กำลังบันทึก…</div><div class="bar"><i></i></div><small id="bh"></small></div>
 <script>
@@ -90,6 +104,13 @@ const DICT={
 'ประเมินสิ่งคุกคามและความปลอดภัยในบ้าน เพื่อป้องกันอุบัติเหตุและความเสี่ยงต่อสุขภาพ':['Assesses hazards and safety in the home to prevent accidents and health risks.','မတော်တဆမှုနှင့် ကျန်းမာရေးအန္တရာယ်ကာကွယ်ရန် အိမ်တွင်းအန္တရာယ်နှင့် ဘေးကင်းလုံခြုံမှုကို အကဲဖြတ်သည်။'],
 'ทำความเข้าใจสิ่งที่ทำให้ชีวิตมีคุณค่า จิตใจเบิกบาน และเจตจำนงในวาระสุดท้ายของชีวิต':['Understands what gives life meaning and joy, and wishes for the end of life.','ဘဝတန်ဖိုးရှိစေသည့်အရာ၊ ပျော်ရွှင်စေသည့်အရာနှင့် နောက်ဆုံးကာလဆန္ဒများကို နားလည်ရန်။'],
 'ระบุแหล่งบริการสุขภาพใกล้บ้านและวิธีการเดินทางไปรับบริการ':['Records nearby health services and how the person travels to them.','အနီးအနားရှိ ကျန်းမာရေးဝန်ဆောင်မှုနှင့် သွားလာနည်းကို မှတ်သည်။'],
+
+'โปรไฟล์ของฉัน':['My profile','ကျွန်ုပ်၏ပရိုဖိုင်'],'รูปโปรไฟล์':['Profile photo','ပရိုဖိုင်ဓာတ်ပုံ'],'เบอร์โทร':['Phone','ဖုန်း'],'ตำแหน่ง':['Position','ရာထူး'],'หน่วยงาน':['Organisation','အဖွဲ့အစည်း'],'รหัสผ่านเดิม':['Current password','လက်ရှိစကားဝှက်'],'เปลี่ยนรหัสผ่าน':['Change password','စကားဝှက်ပြောင်းရန်'],
+'ตำแหน่งฉัน / ใกล้ฉัน':['My location / near me','ကျွန်ုပ်တည်နေရာ / အနီး'],'ใกล้ฉัน':['Near me','အနီးအနား'],'ทุกระยะ':['Any distance','အကွာအဝေးအားလုံး'],'1 กม.':['1 km','၁ ကီလိုမီတာ'],'3 กม.':['3 km','၃ ကီလိုမီတာ'],'5 กม.':['5 km','၅ ကီလိုမီတာ'],'10 กม.':['10 km','၁၀ ကီလိုမီတာ'],
+'เยี่ยมล่าสุด':['Last visit','နောက်ဆုံးလည်ပတ်'],'ยังไม่เคยเยี่ยม':['Never visited','မလည်ပတ်ရသေးပါ'],'เริ่มเยี่ยมบ้าน':['Start home visit','အိမ်လည်ပတ်မှုစတင်ရန်'],'โทร':['Call','ဖုန်းခေါ်ရန်'],
+'ล้าง':['Clear','ဖျက်ရန်'],'ย้อน':['Undo','နောက်ပြန်'],'ถ่ายรูป':['Take photo','ဓာတ်ပုံရိုက်ရန်'],'อัปโหลด':['Upload','တင်ရန်'],
+'ผู้สูงอายุทั้งหมด':['Older persons','သက်ကြီးရွယ်အိုစုစုပေါင်း'],'ต้องส่งต่อ':['Need referral','လွှဲပို့ရန်လို'],'ไม่ได้เยี่ยม > 30 วัน':['Not visited > 30 days','၃၀ ရက်ကျော် မလည်ပတ်'],
+'ทั้งหมด':['All','အားလုံး'],'ต้องส่งต่อ (คัดกรองพบผิดปกติ)':['Needs referral (abnormal screening)','လွှဲပို့ရန်လို (စစ်ဆန်းမှုတွင် ပုံမှန်မဟုတ်)'],'ไม่ได้เยี่ยม > 30 วัน / ยังไม่เคยเยี่ยม':['Not visited > 30 days / never','၃၀ ရက်ကျော် / မလည်ပတ်ဖူး'],'ADL กลุ่ม 3':['ADL group 3','ADL အုပ်စု ၃'],'เรียง: ชื่อ':['Sort: name','စီရန် - အမည်'],'เรียง: เยี่ยมล่าสุด':['Sort: last visit','စီရန် - နောက်ဆုံးလည်ပတ်'],'เรียง: ใกล้ฉัน':['Sort: near me','စီရန် - အနီးဆုံး'],
 'ปันรัก ปันสุข':['Share love, share happiness','ချစ်ခြင်းမေတ္တာနှင့် ပျော်ရွှင်မှု မျှဝေခြင်း'],'แพลตฟอร์มระดมทุน':['Crowdfunding platform','ရန်ပုံငွေကောက်ခံရေးပလက်ဖောင်း'],'วิสาหกิจเพื่อสังคม · เชียงใหม่':['Social enterprise · Chiang Mai','လူမှုလုပ်ငန်းရှင် · ချင်းမိုင်'],
 'โครงการดูแลผู้สูงอายุยากไร้ที่ขาดโอกาส ร่วมกับผู้นำชุมชนและ อสม. ด้วยการเยี่ยมบ้าน ประเมินสุขภาพ มอบอาหาร ยาสามัญประจำบ้าน และปรับปรุงที่อยู่อาศัย (ขยายพื้นที่สู่ อ.แม่สอด จ.ตาก)':['A programme caring for disadvantaged older people with community leaders and village health volunteers: home visits, health checks, food, basic medicines and housing repairs (expanding to Mae Sot, Tak).','ရပ်ရွာခေါင်းဆောင်များနှင့် ကျေးရွာကျန်းမာရေးစေတနာ့ဝန်ထမ်းများနှင့်အတူ ဆင်းရဲနွမ်းပါးသော သက်ကြီးရွယ်အိုများကို စောင့်ရှောက်သည့်စီမံကိန်း - အိမ်လည်ပတ်ခြင်း၊ ကျန်းမာရေးစစ်ဆေးခြင်း၊ အစားအစာ၊ အခြေခံဆေးနှင့် အိမ်ပြုပြင်ခြင်း (မဲဆောက်၊ တာက်သို့ ချဲ့ထွင်)။'],
 'แพลตฟอร์มระดมทุนเพื่อโครงการเพื่อสังคม การบริจาคเดือนละ 350 บาท หรือ 4,200 บาทต่อปี ช่วยให้ผู้สูงอายุหนึ่งคนมีชีวิตที่ดีขึ้น':['A crowdfunding platform for social projects. Donating 350 baht a month (4,200 baht a year) improves the life of one older person.','လူမှုရေးစီမံကိန်းများအတွက် ရန်ပုံငွေကောက်ခံရေးပလက်ဖောင်း။ တစ်လ ဘတ် ၃၅၀ (တစ်နှစ် ၄,၂၀၀) လှူဒါန်းခြင်းဖြင့် သက်ကြီးရွယ်အိုတစ်ဦး၏ ဘဝကို တိုးတက်စေသည်။'],
@@ -102,7 +123,7 @@ function trNode(n){if(n.nodeType==3){if(n._o===undefined)n._o=n.data;const v=trs
  else if(n.nodeType==1&&n.tagName!='SCRIPT'&&n.tagName!='STYLE'){['placeholder','title'].forEach(a=>{if(n.hasAttribute(a)){if(n['_'+a]===undefined)n['_'+a]=n.getAttribute(a);n.setAttribute(a,trs(n['_'+a]))}});n.childNodes.forEach(trNode)}}
 new MutationObserver(ms=>ms.forEach(m=>m.addedNodes.forEach(trNode))).observe(document.body,{childList:true,subtree:true});
 function setLang(v){LANG=v;localStorage.lang=v;document.documentElement.lang=v;trNode(document.body)}
-function hdr(){$('#hd').innerHTML=`<img src="${img(CFG.COMPANY_LOGO)}" alt=""><b>Buddy HomeCare</b>${S.user&&S.user.photo?`<img src="${esc(S.user.photo)}" alt="" style="height:30px;width:30px;border-radius:50%;object-fit:cover;padding:0">`:''}${ic('language','m')}<select id="lang" onchange="setLang(this.value)">${Object.entries(LN).map(([k,v])=>`<option value="${k}" ${k==LANG?'selected':''}>${v}</option>`).join('')}</select>${S.user?`<button onclick="logout()">${ic('right-from-bracket','m')}ออก</button>`:''}`}
+function hdr(){$('#hd').innerHTML=`<img src="${img(CFG.COMPANY_LOGO)}" alt=""><b>Buddy HomeCare</b>${ic('language','m')}<select id="lang" onchange="setLang(this.value)">${Object.entries(LN).map(([k,v])=>`<option value="${k}" ${k==LANG?'selected':''}>${v}</option>`).join('')}</select>${S.user?`<button onclick="logout()">${ic('right-from-bracket','m')}ออก</button>`:''}`}
 /* ===== ICONS: Font Awesome Free ===== */
 // Optional: paste your Font Awesome Kit code here, or set FA_KIT_CODE in the Configs tab. Without a kit the free cdnjs stylesheet is used.
 const FA_KIT_CODE="";let _kit=1; // Kit is embedded in <head>; set _kit=0 to load a Kit from Configs (FA_KIT_CODE) instead
@@ -119,7 +140,7 @@ COMPANY_LOGO:"https://drive.google.com/file/d/1PI5GG1IRkXJa9ZEXzk0OMn44eEjWxcyb/
 PROGRAM_LOGO:"https://drive.google.com/file/d/1gXLL7mOVJ33QQ_AznoS_yy1KSXzT5eZF/view?usp=drive_link"};
 let CFG={...DEF},S={token:localStorage.tok||'',user:JSON.parse(localStorage.usr||'null')},ELD=[],LOC={};
 const $=s=>document.querySelector(s),esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-const img=u=>u&&u.includes('drive.google.com/file')?`https://drive.google.com/thumbnail?id=${(u.match(/[-\w]{25,}/)||[])[0]}&sz=w400`:u||'';
+const img=(u,w=400)=>u&&u.includes('drive.google.com/file')?`https://drive.google.com/thumbnail?id=${(u.match(/[-\w]{25,}/)||[])[0]}&sz=w${w}`:u||'';
 const toast=t=>{const e=$('#toast');e.textContent=t;e.style.display='block';clearTimeout(e._t);e._t=setTimeout(()=>e.style.display='none',5000)};
 let bto;const busy=(b,t='กำลังบันทึก…')=>{clearTimeout(bto);$('#bh').textContent='';$('#busy').style.display=b?'flex':'none';if(b){$('#bt').textContent=t;bto=setTimeout(()=>$('#bh').textContent='ใช้เวลานานกว่าปกติ… Apps Script อาจกำลังเริ่มทำงานครั้งแรก หรืออินเทอร์เน็ตช้า (รอได้ถึง 30 วินาที)',7000)}};
 const LG=[];let inflight=0;
@@ -182,31 +203,44 @@ const EL={id:'e',f:[P('photo','รูปถ่าย'),T('name','ชื่อ-�
  C('problems','ปัญหาสุขภาพ',['โรคความดันโลหิตสูง','โรคหลอดเลือดสมอง','โรคอัมพฤกษ์ อัมพาต','โรคเบาหวาน','โรคหัวใจ','โรคไต','โรคมะเร็ง','โรคปอดอุดกั้นเรื้อรัง','โรคข้อเข่าเสื่อม','โรคกระดูกพรุน','โรคเกาต์','โรคสมองเสื่อม','โรคตา','โรคระบบทางเดินปัสสาวะ','อื่น ๆ'])]};
 
 /* ===== FORM ENGINE ===== */
+const isR=x=>x.t=='S'&&x.o.length<=6,ob=o=>'opts'+(o.some(s=>String(s).length>26)?' v':'');
+const wh=n=>`<div class="dw" data-n="${n}"><canvas width="640" height="640"></canvas><img class="wp" hidden alt=""><div class="tb2"><button type="button" class="p g" data-a="clr">${ic('trash','m')}<span>ล้าง</span></button><button type="button" class="p g" data-a="und">${ic('rotate-left','m')}<span>ย้อน</span></button><label class="p">${ic('camera','m')}<span>ถ่ายรูป</span><input type="file" accept="image/*" capture="environment" hidden></label><label class="p">${ic('image','m')}<span>อัปโหลด</span><input type="file" accept="image/*" hidden></label></div></div>`;
+function initW(r){r._wd={};r.querySelectorAll('.dw').forEach(w=>{const n=w.dataset.n,cv=w.querySelector('canvas'),g=cv.getContext('2d'),pv=w.querySelector('.wp');let st=[],cur=null,bg=null;
+ const paint=()=>{g.fillStyle='#fff';g.fillRect(0,0,640,640);if(bg){const s=Math.min(640/bg.width,640/bg.height);g.drawImage(bg,(640-bg.width*s)/2,(640-bg.height*s)/2,bg.width*s,bg.height*s)}
+  g.lineWidth=5;g.lineCap=g.lineJoin='round';g.strokeStyle='#111';st.forEach(s=>{g.beginPath();s.forEach((p,i)=>i?g.lineTo(p[0],p[1]):g.moveTo(p[0],p[1]));if(s.length==1)g.lineTo(s[0][0]+.1,s[0][1]);g.stroke()})};
+ const sv=()=>{r._ph[n]=(bg||st.length)?cv.toDataURL('image/jpeg',.8):'';pv.hidden=true;r.dispatchEvent(new Event('input'))};
+ const xy=e=>{const b=cv.getBoundingClientRect();return[(e.clientX-b.left)*640/b.width,(e.clientY-b.top)*640/b.height]};
+ cv.onpointerdown=e=>{e.preventDefault();cv.setPointerCapture(e.pointerId);cur=[xy(e)];st.push(cur);paint()};
+ cv.onpointermove=e=>{if(!cur)return;cur.push(xy(e));paint()};
+ cv.onpointerup=cv.onpointercancel=()=>{if(cur){cur=null;sv()}};
+ w.onclick=e=>{const a=e.target.closest('[data-a]');if(!a)return;if(a.dataset.a=='clr'){st=[];bg=null}else st.pop();paint();sv()};
+ w.querySelectorAll('input[type=file]').forEach(f=>f.onchange=()=>{const fl=f.files[0];if(!fl)return;const im=new Image();im.onload=()=>{bg=im;st=[];paint();sv()};im.src=URL.createObjectURL(fl);setTimeout(()=>f.value='',0)});
+ r._wd[n]=u=>{if(u){r._ph[n]=u;pv.src=u;pv.hidden=false}};paint()})}
 const nm=(d,x)=>`d${d.id}_${x.k}`;
 function fld(d,x){const n=nm(d,x);if(x.t=='H')return`<h4>${x.l}</h4>`;let c='';
  if(x.t=='T')c=`<input name="${n}">`;else if(x.t=='N')c=`<input type="number" step="any" inputmode="decimal" name="${n}">`;else if(x.t=='D')c=`<input type="date" name="${n}">`;
  else if(x.t=='A')c=`<textarea rows="3" name="${n}"></textarea>`;
- else if(x.t=='S')c=`<select name="${n}"><option value="">-- เลือก --</option>${x.o.map(o=>`<option value="${o}">${o}</option>`).join('')}</select>`;
- else if(x.t=='C')c=x.o.map(o=>`<label class="o"><input type="checkbox" name="${n}" value="${o}">${o}</label>`).join('');
- else if(x.t=='R')c=x.o.map((o,i)=>`<label class="o"><input type="radio" name="${n}" value="${i+1}">${o}</label>`).join('');
- else if(x.t=='P')c=`<div class="ph"><input type="file" accept="image/*" capture="environment" name="${n}"><img hidden></div>`;
+ else if(isR(x))c=`<div class="${ob(x.o)}">${x.o.map(o=>`<label class="o"><input type="radio" data-u="1" name="${n}" value="${o}">${o}</label>`).join('')}</div>`;else if(x.t=='S')c=`<select name="${n}"><option value="">-- เลือก --</option>${x.o.map(o=>`<option value="${o}">${o}</option>`).join('')}</select>`;
+ else if(x.t=='C')c=`<div class="${ob(x.o)}">${x.o.map(o=>`<label class="o"><input type="checkbox" name="${n}" value="${o}">${o}</label>`).join('')}</div>`;
+ else if(x.t=='R')c=`<div class="${ob(x.o)}">${x.o.map((o,i)=>`<label class="o"><input type="radio" data-u="1" name="${n}" value="${i+1}">${o}</label>`).join('')}</div>`;
+ else if(x.t=='W')c=wh(n);else if(x.t=='P')c=`<div class="ph"><input type="file" accept="image/*" name="${n}"><img hidden></div>`;
  return`<label>${x.l}</label>${c}`}
 function collect(r,d){const o={};d.f.forEach(x=>{if(x.t=='H')return;const n=nm(d,x);
  if(x.t=='C')o[x.k]=[...r.querySelectorAll(`[name="${n}"]:checked`)].map(e=>e.value);
  else if(x.t=='R'){const e=r.querySelector(`[name="${n}"]:checked`);o[x.k]=e?+e.value:''}
- else if(x.t=='P')o[x.k]=r._ph[n]||'';else o[x.k]=r.querySelector(`[name="${n}"]`).value});
+ else if(x.t=='P'||x.t=='W')o[x.k]=r._ph[n]||'';else if(isR(x)){const e=r.querySelector(`[name="${n}"]:checked`);o[x.k]=e?e.value:''}else o[x.k]=r.querySelector(`[name="${n}"]`).value});
  const e=r.querySelector('.res');o._result=e?(e.dataset.th||''):'';return o}
 function showPh(r,n,u){r._ph[n]=u;const i=r.querySelector(`[name="${n}"]`).nextElementSibling;i.src=u;i.hidden=false}
 function fill(r,d,v){d.f.forEach(x=>{if(x.t=='H'||!v||v[x.k]==null||v[x.k]==='')return;const n=nm(d,x);let a=v[x.k];
  if(x.t=='C'){if(typeof a=='string')try{a=JSON.parse(a)}catch{a=[a]}r.querySelectorAll(`[name="${n}"]`).forEach(e=>e.checked=a.includes(e.value))}
- else if(x.t=='R'){const e=r.querySelector(`[name="${n}"][value="${a}"]`);if(e)e.checked=true}
- else if(x.t=='P')showPh(r,n,a);else r.querySelector(`[name="${n}"]`).value=x.t=='D'?String(a).slice(0,10):a})}
-function mk(d,v){const r=document.createElement('div');r._ph={};r.innerHTML=d.f.map(x=>fld(d,x)).join('')+(d.calc?'<div class="res"></div>':'');if(v)fill(r,d,v);
- const up=()=>{if(d.calc){const e=r.querySelector('.res'),h=d.calc(collect(r,d));e.innerHTML=h;e.dataset.th=h.replace(/<br>/g,' | ')}};r.addEventListener('input',up);
- r.addEventListener('change',e=>{const el=e.target;if(el.type!='file'||!el.files[0])return;const im=new Image();im.onload=()=>{const s=Math.min(1,1024/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=im.width*s;c.height=im.height*s;c.getContext('2d').drawImage(im,0,0,c.width,c.height);showPh(r,el.name,c.toDataURL('image/jpeg',.7))};im.src=URL.createObjectURL(el.files[0])});up();return r}
+ else if(x.t=='R'){const e=r.querySelector(`[name="${n}"][value="${a}"]`);if(e){e.checked=true;r._lc[n]=String(a)}}
+ else if(x.t=='P')showPh(r,n,a);else if(x.t=='W')r._wd[n](a);else if(isR(x)){const e=[...r.querySelectorAll(`[name="${n}"]`)].find(i=>i.value==a);if(e){e.checked=true;r._lc[n]=e.value}}else r.querySelector(`[name="${n}"]`).value=x.t=='D'?String(a).slice(0,10):a})}
+function mk(d,v){const r=document.createElement('div');r._ph={};r._lc={};r.innerHTML=d.f.map(x=>fld(d,x)).join('')+(d.calc?'<div class="res"></div>':'');initW(r);if(v)fill(r,d,v);
+ const up=()=>{if(d.calc){const e=r.querySelector('.res'),h=d.calc(collect(r,d));e.innerHTML=h;e.dataset.th=h.replace(/<br>/g,' | ')}};r.addEventListener('click',e=>{const t=e.target;if(t.dataset&&t.dataset.u&&t.type=='radio'){if(r._lc[t.name]===t.value){t.checked=false;delete r._lc[t.name];r.dispatchEvent(new Event('input'))}else r._lc[t.name]=t.value}});r.addEventListener('input',up);
+ r.addEventListener('change',e=>{const el=e.target;if(el.type!='file'||!el.files[0]||el.closest('.dw'))return;const im=new Image();im.onload=()=>{const s=Math.min(1,1024/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=im.width*s;c.height=im.height*s;c.getContext('2d').drawImage(im,0,0,c.width,c.height);showPh(r,el.name,c.toDataURL('image/jpeg',.7))};im.src=URL.createObjectURL(el.files[0])});up();return r}
 async function ups(o){if(Object.values(o).some(v=>typeof v=='string'&&v.startsWith('data:')))busy(1,'กำลังอัปโหลดรูปภาพ…');for(const k in o)if(typeof o[k]=='string'&&o[k].startsWith('data:'))o[k]=await api('upload',{data:o[k].split(',')[1],name:k+'_'+Date.now()+'.jpg'});return o}
 const filled=o=>Object.keys(o).some(k=>k!='_result'&&o[k]!==''&&!(Array.isArray(o[k])&&!o[k].length));
-function fmt(id,o){const d=id=='CS'?SCR:DOM.find(x=>x.id==id);if(!d)return'';return d.f.filter(x=>x.t!='H'&&o[x.k]!==undefined&&o[x.k]!==''&&!(Array.isArray(o[x.k])&&!o[x.k].length)).map(x=>`<div><b>${x.l}</b>: ${x.t=='P'?`<img src="${esc(o[x.k])}" alt="" style="max-height:90px;max-width:100%;border-radius:8px;vertical-align:middle;margin:2px">`:esc(Array.isArray(o[x.k])?o[x.k].join(', '):x.t=='R'?x.o[o[x.k]-1]:o[x.k])}</div>`).join('')+(o._result?`<div class="res">${esc(o._result)}</div>`:'')}
+function fmt(id,o){const d=id=='CS'?SCR:DOM.find(x=>x.id==id);if(!d)return'';return d.f.filter(x=>x.t!='H'&&o[x.k]!==undefined&&o[x.k]!==''&&!(Array.isArray(o[x.k])&&!o[x.k].length)).map(x=>`<div><b>${x.l}</b>: ${(x.t=='P'||x.t=='W')?`<img src="${esc(o[x.k])}" alt="" style="max-height:90px;max-width:100%;border-radius:8px;vertical-align:middle;margin:2px">`:esc(Array.isArray(o[x.k])?o[x.k].join(', '):x.t=='R'?x.o[o[x.k]-1]:o[x.k])}</div>`).join('')+(o._result?`<div class="res">${esc(o._result)}</div>`:'')}
 
 /* ===== COMMUNITY SCREENING (แบบคัดกรองผู้สูงอายุในชุมชน – 9 ด้าน ของ อสม.) ===== */
 // Abnormal in >=1 domain -> refer to a health officer for in-depth INHOMESSS assessment. Edit SCRD to change the rules.
@@ -221,7 +255,7 @@ const SCR={id:'c',f:[H('ข้อมูลเชิงสังคม'),Sx('live
  H('7. ด้านการปฏิบัติกิจวัตรประจำวัน (ADL)'),Sx('adl','ความสามารถช่วยเหลือตนเองในกิจวัตรประจำวันโดยไม่ต้องพึ่งคนอื่น ลดลงหรือไม่ (กินอาหาร ล้างหน้า แปรงฟัน หวีผม ลุกนั่ง เข้าห้องน้ำ เคลื่อนที่ในบ้าน แต่งตัว ขึ้นลงบันได 1 ชั้น อาบน้ำ กลั้นอุจจาระ กลั้นปัสสาวะ)',['ไม่ลดลง','ลดลง']),
  H('8. ด้านช่องปาก (Oral health)'),Sx('o1','มีความยากลำบากในการเคี้ยวอาหารแข็ง',MI),Sx('o2','มีอาการเจ็บปวดในช่องปาก',MI),
  H('9. ด้านความคิดความจำ (Cognitive decline) – Mini-Cog'),F('H','','ขั้นที่ 1 ให้พูดตามและจำ 3 คำ: หลานสาว – สวรรค์ – ภูเขา · ขั้นที่ 2 วาดนาฬิกา (ตัวเลข+เข็ม) เวลา 11.10 น. · ขั้นที่ 3 ให้บอก 3 คำที่จำไว้'),
- N('mcw','Word recall (0–3 คะแนน, 1 คะแนนต่อ 1 คำ)'),Sx('mcc','Clock draw (วาดนาฬิกาแบบฟรีแฮนด์)',MCC),P('mcp','ภาพนาฬิกาที่ผู้สูงอายุวาด')]};
+ N('mcw','Word recall (0–3 คะแนน, 1 คะแนนต่อ 1 คำ)'),Sx('mcc','Clock draw (วาดนาฬิกาแบบฟรีแฮนด์)',MCC),F('W','mcp','วาดนาฬิกาเวลา 11.10 น. ด้วยนิ้ว/ปากกาบนหน้าจอ หรือถ่ายรูป/อัปโหลดภาพที่วาดบนกระดาษ')]};
 const SCRD=[['การเคลื่อนไหว','person-walking',v=>v.tugx||nz(v.tug)||v.fall?(v.tugx=='ใช่'||(nz(v.tug)&&+v.tug>12)||v.fall=='มี'):null],
 ['ขาดสารอาหาร','bowl-rice',v=>v.wl||v.ap?(v.wl=='มี'||v.ap=='มี'):null],['การมองเห็น','eye',v=>v.eye?v.eye=='มี':null],['การได้ยิน','ear-listen',v=>v.hr?v.hr!=HRL[0]:null],
 ['ซึมเศร้า','face-frown',v=>v.d1||v.d2?(v.d1=='มี'||v.d2=='มี'):null],['กลั้นปัสสาวะ','droplet',v=>v.ui?v.ui=='มี':null],['กิจวัตรประจำวัน','hand-holding-heart',v=>v.adl?v.adl=='ลดลง':null],
@@ -242,17 +276,31 @@ const GCOL={1:'#2e9e6b',2:'#f2c200',3:'#d64545'};
 function loadLeaflet(){return new Promise((ok,no)=>{if(window.L)return ok();const l=document.createElement('link');l.rel='stylesheet';l.href='https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css';document.head.append(l);
  const x=document.createElement('script');x.src='https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js';x.onload=ok;x.onerror=()=>no(Error('โหลดแผนที่ไม่สำเร็จ – ตรวจอินเทอร์เน็ต'));document.head.append(x)})}
 const adlGroup=d=>{if(!d)return null;let t=0;for(let i=1;i<=16;i++){if(!d['a'+i])return null;t+=+d['a'+i]}return t<=20?1:t<=35?2:3};
+let ME=null;
+const hav=(a,b,c,d)=>{const r=Math.PI/180,x=Math.sin((c-a)*r/2)**2+Math.cos(a*r)*Math.cos(c*r)*Math.sin((d-b)*r/2)**2;return 12742*Math.asin(Math.sqrt(x))};
+const km=x=>x<1?Math.round(x*1000)+' ม.':x.toFixed(1)+' กม.';
+function getMe(ok,bad){if(!navigator.geolocation){bad&&bad();return}navigator.geolocation.getCurrentPosition(p=>{ME={lat:p.coords.latitude,lng:p.coords.longitude,acc:p.coords.accuracy};ok&&ok()},()=>{toast('ไม่สามารถอ่านตำแหน่งได้');bad&&bad()},{enableHighAccuracy:true,timeout:15000,maximumAge:30000})}
 async function mapPage(){if(window._mp){try{window._mp.remove()}catch(e){}window._mp=null}
  await needE(1);const[md]=await Promise.all([api('mapData'),loadLeaflet()]);
  const pts=ELD.map(e=>({e,la:parseFloat(e.lat),ln:parseFloat(e.lng)})).filter(p=>isFinite(p.la)&&isFinite(p.ln)&&(p.la||p.ln)),miss=ELD.length-pts.length;
  const lg=[1,2,3].map(n=>`<span class="chip"><b class="dot" style="border-color:${GCOL[n]}"></b><span>กลุ่ม</span> ${n}</span>`).join('')+`<span class="chip"><b class="dot" style="border-color:#9aa7ad"></b><span>ยังไม่มีข้อมูล ADL</span></span>`;
- M.innerHTML=`<h2>${ic('map-location-dot','m')}<span>แผนที่</span> (${pts.length}/${ELD.length})</h2><div class="card" style="padding:8px"><div id="map" style="height:calc(100vh - 270px);min-height:360px;border-radius:12px"></div><div style="margin-top:6px">${lg}<br><small><span>เส้นขอบ = กลุ่มความสามารถในการทำกิจวัตรประจำวัน (BADL/IADL) · ไอคอนในป๊อปอัป = ด้านที่คัดกรองพบผิดปกติ</span></small>${miss?`<br><small>${miss} <span>คนยังไม่มีพิกัดบ้าน (ไม่แสดงบนแผนที่)</span></small>`:''}</div></div>`;
+ M.innerHTML=`<h2>${ic('map-location-dot','m')}<span>แผนที่</span> (${pts.length}/${ELD.length})</h2><div class="card" style="padding:8px"><div class="fb"><button class="p" id="mb">${ic('crosshairs','m')}<span>ตำแหน่งฉัน / ใกล้ฉัน</span></button><select id="rad"><option value="0">ทุกระยะ</option><option value="1">1 กม.</option><option value="3">3 กม.</option><option value="5">5 กม.</option><option value="10">10 กม.</option></select></div><div id="map" style="height:calc(100vh - 330px);min-height:340px;border-radius:12px"></div><div style="margin-top:6px">${lg}<br><small><span>เส้นขอบ = กลุ่มความสามารถในการทำกิจวัตรประจำวัน (BADL/IADL) · ไอคอนในป๊อปอัป = ด้านที่คัดกรองพบผิดปกติ</span></small>${miss?`<br><small>${miss} <span>คนยังไม่มีพิกัดบ้าน (ไม่แสดงบนแผนที่)</span></small>`:''}</div></div><div id="near"></div>`;
  const mp=window._mp=L.map('map').setView([16.71,98.57],12);L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap contributors'}).addTo(mp);
- pts.forEach(({e,la,ln})=>{const m=(md||{})[e.id]||{},gr=adlGroup(m.d1),r=m.cs?scr(m.cs):null,col=gr?GCOL[gr]:'#9aa7ad',
+ const mk=pts.map(p=>{const{e,la,ln}=p,m=(md||{})[e.id]||{},gr=adlGroup(m.d1),r=m.cs?scr(m.cs):null,col=gr?GCOL[gr]:'#9aa7ad',
   ab=r?SCRD.map((d,i)=>r[i]===true?`<span class="ab" title="${d[0]}">${ic(d[1])}</span>`:'').join(''):'',
-  pop=`<a class="pop" href="#elder/${esc(e.id)}"><img class="av" src="${esc(e.photo||'')}" alt=""><div><b>${esc(e.name)}</b><br><small>${age(e.birth)||'?'} ปี${gr?` · <span>กลุ่ม</span> ${gr}`:''}</small><br>${r?(ab||'<small><span>ไม่พบความผิดปกติ</span></small>'):'<small><span>ยังไม่ได้คัดกรอง</span></small>'}</div></a><a class="p s" target="_blank" rel="noopener" href="https://www.google.com/maps/dir/?api=1&destination=${la},${ln}">${ic('location-arrow','m')}<span>นำทาง</span></a>`;
-  L.marker([la,ln],{icon:L.divIcon({className:'',html:`<div class="pin" style="border-color:${col}">${e.photo?`<img src="${esc(e.photo)}" alt="">`:ic('user')}</div>`,iconSize:[44,44],iconAnchor:[22,22],popupAnchor:[0,-24]})}).addTo(mp).bindPopup(pop)});
- if(pts.length)mp.fitBounds(L.latLngBounds(pts.map(p=>[p.la,p.ln])),{padding:[40,40],maxZoom:15});setTimeout(()=>mp.invalidateSize(),150)}
+  pop=()=>`<a class="pop" href="#elder/${esc(e.id)}"><img class="av" src="${esc(e.photo||'')}" alt=""><div><b>${esc(e.name)}</b><br><small>${age(e.birth)||'?'} ปี${gr?` · <span>กลุ่ม</span> ${gr}`:''}${ME?' · '+km(hav(ME.lat,ME.lng,la,ln)):''}</small><br>${r?(ab||'<small><span>ไม่พบความผิดปกติ</span></small>'):'<small><span>ยังไม่ได้คัดกรอง</span></small>'}</div></a><a class="p s" target="_blank" rel="noopener" href="https://www.google.com/maps/dir/?api=1&destination=${la},${ln}">${ic('location-arrow','m')}<span>นำทาง</span></a>`;
+  return{p,m:L.marker([la,ln],{icon:L.divIcon({className:'',html:`<div class="pin" style="border-color:${col}">${e.photo?`<img src="${esc(e.photo)}" alt="">`:ic('user')}</div>`,iconSize:[44,44],iconAnchor:[22,22],popupAnchor:[0,-24]})}).bindPopup(pop)}});
+ let ml=[];
+ const draw=fit=>{ml.forEach(x=>mp.removeLayer(x));ml=[];const R=+$('#rad').value;
+  if(ME){ml.push(L.circle([ME.lat,ME.lng],{radius:Math.min(ME.acc||30,300),color:'#1a73e8',weight:1,fillOpacity:.1}).addTo(mp),L.marker([ME.lat,ME.lng],{icon:L.divIcon({className:'',html:'<div class="me-dot"></div>',iconSize:[18,18],iconAnchor:[9,9]}),zIndexOffset:1000}).addTo(mp));
+   if(R)ml.push(L.circle([ME.lat,ME.lng],{radius:R*1000,color:'#1a73e8',weight:1,fill:false,dashArray:'4 4'}).addTo(mp))}
+  const vis=[];mk.forEach(o=>{o.d=ME?hav(ME.lat,ME.lng,o.p.la,o.p.ln):null;const on=!R||(o.d!=null&&o.d<=R);if(on){o.m.addTo(mp);vis.push(o)}else mp.removeLayer(o.m)});
+  vis.sort((a,b)=>(a.d??1e9)-(b.d??1e9));
+  $('#near').innerHTML=ME?`<h4>${ic('street-view','m')}<span>ใกล้ฉัน</span> (${vis.length})</h4>`+(vis.slice(0,15).map(o=>`<div class="card row"><a class="row" style="flex:1;color:inherit;text-decoration:none" href="#elder/${esc(o.p.e.id)}"><img class="av" src="${esc(o.p.e.photo||'')}" alt=""><div><b>${esc(o.p.e.name)}</b><br><small>${km(o.d)} · ${esc(String(o.p.e.addr||'')).slice(0,40)}</small></div></a><a class="p s" target="_blank" rel="noopener" href="https://www.google.com/maps/dir/?api=1&destination=${o.p.la},${o.p.ln}">${ic('location-arrow')}</a></div>`).join('')||'<p>ไม่พบข้อมูล</p>'):'';
+  if(fit){const q=vis.slice(0,5).map(o=>[o.p.la,o.p.ln]);if(ME)q.push([ME.lat,ME.lng]);if(q.length)mp.fitBounds(L.latLngBounds(q),{padding:[40,40],maxZoom:16})}};
+ mk.forEach(o=>o.m.addTo(mp));if(pts.length)mp.fitBounds(L.latLngBounds(pts.map(p=>[p.la,p.ln])),{padding:[40,40],maxZoom:15});
+ $('#mb').onclick=()=>getMe(()=>draw(1));$('#rad').onchange=()=>ME?draw(1):getMe(()=>draw(1));
+ setTimeout(()=>mp.invalidateSize(),150);if(ME)draw(0);else getMe(()=>draw(0))}
 /* ===== SPIDER CHART (INHOMESSS) ===== */
 // Each domain score = average of its assessment tools, 0-100 (higher = better / lower risk). Edit SC to change tools or scoring.
 const SHORT={1:'เคลื่อนไหว',2:'โภชนาการ',3:'สภาพบ้าน',4:'คนรอบข้าง',5:'การใช้ยา',6:'ตรวจร่างกาย',7:'ความปลอดภัย',8:'จิตวิญญาณ',9:'บริการ'};
@@ -296,7 +344,7 @@ async function go(){const h=(location.hash||'#home').slice(1).split('/'),p=h[0];
  hdr();
  $('#nv').innerHTML=S.token?[['home','house','หน้าแรก'],['visit','house-medical','เยี่ยมบ้าน'],['tools','toolbox','เครื่องมือ'],['elders','person-cane','ผู้สูงอายุ'],['map','map-location-dot','แผนที่'],['about','circle-info','เกี่ยวกับ']].map(a=>`<a href="#${a[0]}">${ic(a[1],'ic')}<span>${a[2]}</span></a>`).join(''):'';
  if(!S.token)return login();
- M.innerHTML='<div class="card"><div class="bar"><i></i></div><p>⏳ กำลังโหลดข้อมูลจาก Google Sheets… (อาจใช้เวลา 5–20 วินาที)</p></div>';try{await({home,visit,tools,screen,map:mapPage,tool,elders,elder,eform,about,users}[p]||home)(h[1])}catch(e){M.innerHTML=`<div class="card">${ic('triangle-exclamation','m')}${esc(e.message)}<br><button class="p" onclick="go()">ลองใหม่</button></div>`}}
+ M.innerHTML='<div class="card"><div class="bar"><i></i></div><p>⏳ กำลังโหลดข้อมูลจาก Google Sheets… (อาจใช้เวลา 5–20 วินาที)</p></div>';try{await({home,visit,tools,screen,map:mapPage,tool,elders,elder,eform,about,users,profile}[p]||home)(h[1])}catch(e){M.innerHTML=`<div class="card">${ic('triangle-exclamation','m')}${esc(e.message)}<br><button class="p" onclick="go()">ลองใหม่</button></div>`}}
 function login(mode='in',em=''){
  const lg=`<img src="${img(CFG.COMPANY_LOGO)}"><img src="${img(CFG.PROGRAM_LOGO)}">`,I=(id,ph,ty='text')=>`<input id="${id}" type="${ty}" placeholder="${ph}" autocapitalize="off"><br><br>`,C=h=>M.innerHTML=`<div class="login card">${lg}${h}</div>`;
  if(mode=='up')C(`<h2>สมัครสมาชิก</h2>${I('rn','ชื่อ-สกุล')}${I('re','อีเมล','email')}${I('rp','รหัสผ่าน (อย่างน้อย 8 ตัวอักษร)','password')}${I('rq','ยืนยันรหัสผ่าน','password')}<button class="p" id="b1">สมัครสมาชิก</button><p><a href="#" id="b2">มีบัญชีแล้ว? เข้าสู่ระบบ</a></p>`);
@@ -308,15 +356,31 @@ function login(mode='in',em=''){
  if(mode=='up')$('#b1').onclick=()=>act(async()=>{if($('#rp').value!=$('#rq').value)throw Error('รหัสผ่านไม่ตรงกัน');await api('register',{name:v('rn'),email:v('re'),password:$('#rp').value});toast('ส่งรหัสยืนยันไปที่อีเมลแล้ว');login('ver',v('re').toLowerCase())},'กำลังสมัครสมาชิก…');
  if(mode=='ver'){$('#b1').onclick=()=>act(async()=>{const r=await api('verify',{email:em,code:v('vc')});toast(r.status=='active'?'ยืนยันอีเมลสำเร็จ เข้าสู่ระบบได้เลย':'ยืนยันอีเมลแล้ว รอผู้ดูแลอนุมัติบัญชี');login('in')},'กำลังตรวจสอบ…');
   $('#b3').onclick=e=>{e.preventDefault();act(async()=>{await api('resend',{email:em});toast('ส่งรหัสใหม่แล้ว')},'กำลังส่งอีเมล…')}}}
-function home(){M.innerHTML=`<h2>สวัสดี ${esc(S.user.name)}</h2><div class="grid">
+let SUM={},USR={};
+async function loadSum(){try{const r=await api('summary');SUM=r.sum||{};USR=r.users||{}}catch(e){SUM={};USR={}}}
+const D8=x=>x?new Date(x).toLocaleDateString('th-TH'):'',abn=id=>{const c=(SUM[id]||{}).cs;return c?scr(c):null};
+const uchip=u=>{const x=USR[u];return x?`<span class="uc">${x.photo?`<img src="${esc(x.photo)}" alt="">`:ic('circle-user')}${esc(String(x.name||'').split(' ')[0])}</span>`:''};
+async function home(){const u=S.user;M.innerHTML=`<div class="hello"><h2>สวัสดี ${esc(u.name)}</h2><a href="#profile">${u.photo?`<img class="me" src="${esc(u.photo)}" alt="">`:`<span class="me">${ic('user')}</span>`}</a></div>
+<img class="hero" src="${img(CFG.PROGRAM_LOGO,1000)}" alt=""><div class="st" id="st"></div><div class="grid">
 <a class="tile" href="#visit">${ic('house-medical','ic')}<b>Home Care Visit</b><small>แบบบันทึกการเยี่ยมบ้านผู้สูงอายุ</small></a>
 <a class="tile" href="#screen">${ic('clipboard-check','ic')}<b>Community Screening</b><small>แบบคัดกรองผู้สูงอายุในชุมชน 9 ด้าน (อสม.)</small></a>
 <a class="tile" href="#tools">${ic('toolbox','ic')}<b>INHOMESSS tools</b><small>แบบบันทึกแต่ละด้าน 9 ด้าน</small></a>
 <a class="tile" href="#map">${ic('map-location-dot','ic')}<b>แผนที่</b><small>ตำแหน่งบ้านผู้สูงอายุ / นำทาง</small></a>
 <a class="tile" href="#elders">${ic('person-cane','ic')}<b>ผู้สูงอายุ</b><small>ฐานข้อมูล / ประวัติ</small></a>
+<a class="tile" href="#profile">${ic('user-pen','ic')}<b>โปรไฟล์ของฉัน</b><small>รูป ชื่อ เบอร์โทร รหัสผ่าน</small></a>
 <a class="tile" href="#about"><i>ℹ️</i><b>About</b><small>Adopt A Granny · TaeJai · Buddy HomeCare</small></a>
-${S.user.role=='admin'?'<a class="tile" href="#users">'+ic('user-gear','ic')+'<b>ผู้ใช้งาน</b><small>จัดการบัญชี</small></a>':''}</div>`}
-async function visit(){await needE();M.innerHTML=`<h2>แบบบันทึกการเยี่ยมบ้านผู้สูงอายุ</h2><div class="card"><label>วันที่เยี่ยม (บันทึกอัตโนมัติ)</label><input disabled value="${new Date().toLocaleString('th-TH')}"><label>ผู้สูงอายุ</label>${eSel()}<a class="p g" href="#eform/new">+ เพิ่มผู้สูงอายุรายใหม่</a><label>พิกัด</label><div id="loc">กำลังหาตำแหน่ง…</div></div>
+${u.role=='admin'?'<a class="tile" href="#users">'+ic('user-gear','ic')+'<b>ผู้ใช้งาน</b><small>จัดการบัญชี</small></a>':''}</div>`;
+ await needE();await loadSum();const el=$('#st');if(!el)return;let ab=0,nv=0,rc=0;const now=Date.now();
+ ELD.forEach(e=>{const m=SUM[e.id]||{},r=abn(e.id);if(r&&r.some(x=>x===true))ab++;if(m.vd&&now-new Date(m.vd)<=2592e6)rc++;else nv++});
+ el.innerHTML=`<div><b>${ELD.length}</b><small>ผู้สูงอายุทั้งหมด</small></div><div><b>${ab}</b><small>ต้องส่งต่อ</small></div><div><b>${nv}</b><small>ไม่ได้เยี่ยม &gt; 30 วัน</small></div>`}
+const PF={id:'p',f:[F('P','photo','รูปโปรไฟล์'),T('name','ชื่อ-สกุล'),T('phone','เบอร์โทร'),T('position','ตำแหน่ง'),T('org','หน่วยงาน')]};
+async function profile(){const p=await api('getProfile');M.innerHTML=`<h2>${ic('user-pen','m')}<span>โปรไฟล์ของฉัน</span></h2><div class="card"><small>${esc(p.email||p.username)} · ${esc(p.role)}</small><div id="fm"></div><button class="p s" id="sv">${ic('floppy-disk','m')}<span>บันทึก</span></button></div>
+<div class="card"><h4>${ic('key','m')}<span>เปลี่ยนรหัสผ่าน</span></h4><input id="o1" type="password" placeholder="รหัสผ่านเดิม"><br><br><input id="n1" type="password" placeholder="รหัสผ่านใหม่ (อย่างน้อย 8 ตัวอักษร)"><br><br><input id="n2" type="password" placeholder="ยืนยันรหัสผ่านใหม่"><button class="p" id="pw2">${ic('floppy-disk','m')}<span>บันทึก</span></button></div>`;
+ const r=mk(PF,p);$('#fm').append(r);
+ $('#sv').onclick=async()=>{const o=collect(r,PF);if(!o.name)return toast('กรุณากรอกชื่อ');busy(1);try{await ups(o);const u=await api('saveProfile',{...o,lang:LANG});S.user=u;localStorage.usr=JSON.stringify(u);toast('บันทึกแล้ว');location.hash='home'}catch(x){toast(x.message)}busy(0)};
+ $('#pw2').onclick=async()=>{if($('#n1').value!=$('#n2').value)return toast('รหัสผ่านไม่ตรงกัน');busy(1);try{await api('changePassword',{old:$('#o1').value,pw:$('#n1').value});toast('บันทึกแล้ว');['o1','n1','n2'].forEach(i=>$('#'+i).value='')}catch(x){toast(x.message)}busy(0)}}
+const qa=e=>`<div class="fb"><a class="p s" href="#visit/${e.id}">${ic('house-medical','m')}<span>เริ่มเยี่ยมบ้าน</span></a>${e.phone?`<a class="p g" href="tel:${esc(e.phone)}">${ic('phone','m')}<span>โทร</span></a>`:''}${e.lat!==''&&isFinite(parseFloat(e.lat))?`<a class="p g" target="_blank" rel="noopener" href="https://www.google.com/maps/dir/?api=1&destination=${e.lat},${e.lng}">${ic('location-arrow','m')}<span>นำทาง</span></a>`:''}</div>`;
+async function visit(id){await needE();M.innerHTML=`<h2>แบบบันทึกการเยี่ยมบ้านผู้สูงอายุ</h2><div class="card"><label>วันที่เยี่ยม (บันทึกอัตโนมัติ)</label><input disabled value="${new Date().toLocaleString('th-TH')}"><label>ผู้สูงอายุ</label>${eSel(id)}<a class="p g" href="#eform/new">+ เพิ่มผู้สูงอายุรายใหม่</a><label>พิกัด</label><div id="loc">กำลังหาตำแหน่ง…</div></div>
 <div class="card"><h4>การประเมินความเจ็บป่วย (IDEA) – บันทึกตามคำพูดผู้ป่วย</h4><div id="ia"></div></div><div id="ds"></div><button class="p s" id="sv">${ic('floppy-disk','m')}บันทึกการเยี่ยม</button>`;
  navigator.geolocation?.getCurrentPosition(p=>{LOC={lat:p.coords.latitude,lng:p.coords.longitude};$('#loc').textContent=`${LOC.lat.toFixed(5)}, ${LOC.lng.toFixed(5)}`},()=>$('#loc').textContent='ไม่สามารถอ่านตำแหน่งได้');
  const ia=mk(IDEA);$('#ia').append(ia);const rs={};DOM.forEach(d=>{const de=document.createElement('details');de.innerHTML=`<summary>${ic(d.ico,'m')} ${d.id}. ${d.th} (${d.en})</summary>`;rs[d.id]=mk(d);de.append(rs[d.id]);$('#ds').append(de)});
@@ -326,14 +390,23 @@ function tools(){M.innerHTML=`<h2>INHOMESSS tools</h2><div class="grid"><a class
 async function tool(id){const d=DOM.find(x=>x.id==id);await needE();M.innerHTML=`<h2>${ic(d.ico,'m')} ${d.id}. ${d.th} (${d.en})</h2><div class="card"><h4>Overview</h4><p>${d.intro}</p><h4>Assessment tools</h4>${d.tools.map(t=>`<span class="chip">${t}</span>`).join('')}</div>
 <div class="card"><h4>บันทึกการประเมิน</h4><label>ผู้สูงอายุ</label>${eSel()}<div id="fm"></div><button class="p s" id="sv">${ic('floppy-disk','m')}บันทึก</button></div>`;
  const r=mk(d);$('#fm').append(r);$('#sv').onclick=async()=>{const e=$('#el').value;if(!e)return toast('กรุณาเลือกผู้สูงอายุ');busy(1);try{await api('saveAssess',{elderId:e,domain:d.id,data:await ups(collect(r,d))});toast('บันทึกแล้ว');location.hash='elder/'+e}catch(x){toast(x.message)}busy(0)}}
-async function elders(){await needE(1);const draw=q=>$('#lst').innerHTML=ELD.filter(e=>(e.name+e.cid+e.hn).includes(q)).map(e=>`<a class="card row" href="#elder/${e.id}" style="text-decoration:none;color:inherit"><img class="av" src="${esc(e.photo)}"><div><b>${esc(e.name)}</b><br><small>${age(e.birth)||'?'} ปี · ${esc(e.addr).slice(0,40)}</small></div></a>`).join('')||'<p>ไม่พบข้อมูล</p>';
- M.innerHTML=`<h2>ฐานข้อมูลผู้สูงอายุ (${ELD.length})</h2><input id="q" placeholder="ค้นหาชื่อ / เลขบัตร / HN"><a class="p" href="#eform/new">+ เพิ่มผู้สูงอายุ</a><div id="lst"></div>`;draw('');$('#q').oninput=e=>draw(e.target.value)}
+async function elders(){await needE(1);await loadSum();let f='all',s='name',q='';
+ M.innerHTML=`<h2>ฐานข้อมูลผู้สูงอายุ (${ELD.length})</h2><input id="q" placeholder="ค้นหาชื่อ / เลขบัตร / HN"><div class="fb"><select id="fs"><option value="all">ทั้งหมด</option><option value="ab">ต้องส่งต่อ (คัดกรองพบผิดปกติ)</option><option value="old">ไม่ได้เยี่ยม &gt; 30 วัน / ยังไม่เคยเยี่ยม</option><option value="g3">ADL กลุ่ม 3</option></select><select id="ss"><option value="name">เรียง: ชื่อ</option><option value="visit">เรียง: เยี่ยมล่าสุด</option><option value="near">เรียง: ใกล้ฉัน</option></select></div><a class="p" href="#eform/new">+ เพิ่มผู้สูงอายุ</a> <small id="cn"></small><div id="lst"></div>`;
+ const now=Date.now(),ds=e=>ME&&e.lat!==''&&isFinite(parseFloat(e.lat))?hav(ME.lat,ME.lng,+e.lat,+e.lng):null;
+ const draw=()=>{let l=ELD.filter(e=>(e.name+e.cid+e.hn).toLowerCase().includes(q)).filter(e=>{const m=SUM[e.id]||{},r=abn(e.id);return f=='all'||(f=='ab'&&r&&r.some(x=>x===true))||(f=='old'&&(!m.vd||now-new Date(m.vd)>2592e6))||(f=='g3'&&adlGroup(m.d1)==3)});
+  l.sort(s=='visit'?(a,b)=>String((SUM[b.id]||{}).vd||'').localeCompare(String((SUM[a.id]||{}).vd||'')):s=='near'?(a,b)=>(ds(a)??1e9)-(ds(b)??1e9):(a,b)=>String(a.name).localeCompare(b.name,'th'));
+  $('#cn').textContent=l.length+'/'+ELD.length;
+  $('#lst').innerHTML=l.map(e=>{const m=SUM[e.id]||{},r=abn(e.id),gr=adlGroup(m.d1),dt=m.vd||m.ad,du=m.vd?m.vu:m.au,d=ds(e),
+   ab=r?(r.some(x=>x===true)?SCRD.map((c,i)=>r[i]===true?`<span class="ab" title="${c[0]}">${ic(c[1])}</span>`:'').join(''):`<small style="color:#2e9e6b">${ic('circle-check','m')}<span>ไม่พบความผิดปกติ</span></small>`):`<small style="color:var(--mut)"><span>ยังไม่ได้คัดกรอง</span></small>`;
+   return`<a class="card row" href="#elder/${e.id}" style="text-decoration:none;color:inherit"><img class="av" style="width:60px;height:60px;border:3px solid ${gr?GCOL[gr]:'#9aa7ad'}" src="${esc(e.photo)}" alt=""><div style="flex:1;min-width:0"><b>${esc(e.name)}</b><br><small>${age(e.birth)||'?'} ปี · ${dt?`${ic('calendar-check','m')}<span>เยี่ยมล่าสุด</span> ${D8(dt)}`:'<span>ยังไม่เคยเยี่ยม</span>'}${d!=null?' · '+km(d):''}</small><br>${du?uchip(du):''}${ab}</div></a>`}).join('')||'<p>ไม่พบข้อมูล</p>'};
+ $('#q').oninput=e=>{q=e.target.value.toLowerCase();draw()};$('#fs').onchange=e=>{f=e.target.value;draw()};
+ $('#ss').onchange=e=>{s=e.target.value;if(s=='near'&&!ME)getMe(draw);else draw()};draw()}
 async function elder(id){await needE();const e=ELD.find(x=>x.id==id);if(!e)throw Error('ไม่พบข้อมูล');const hs=await api('history',{elderId:id});
  const pr=Array.isArray(e.problems)?e.problems:(()=>{try{return JSON.parse(e.problems)}catch{return[]}})();
  const items=[...hs.visits.map(v=>({d:v.date,h:`${ic('clipboard-list','m')} เยี่ยมบ้าน (${esc(v.user)})`,b:Object.entries(pj(v.idea)).filter(([k,x])=>x&&k!='_result').map(([k,x])=>`<div><b>${IDEA.f.find(f=>f.k==k)?.l||k}</b>: ${esc(x)}</div>`).join(''),vid:v.id})),...hs.assess.map(a=>({d:a.date,h:a.domain=='CS'?`${ic('clipboard-check','m')}<span>แบบคัดกรองผู้สูงอายุในชุมชน</span>`:`${ic(DOM[a.domain-1].ico,'m')} ด้าน ${a.domain}: ${DOM[a.domain-1].th}${a.visitId?' (ในการเยี่ยม)':''}`,b:fmt(a.domain,pj(a.data))}))].sort((a,b)=>b.d>a.d?1:-1);
  M.innerHTML=`<div class="card row"><img class="av" style="width:80px;height:80px" src="${esc(e.photo)}"><div><h2 style="margin:0">${esc(e.name)}</h2>${age(e.birth)||'?'} ปี · HN ${esc(e.hn)||'-'}<br>${esc(e.phone)}</div></div>
  <div class="card">${ic('location-dot','m')}${esc(e.addr)}<br>สิทธิ์: ${esc(e.rights)||'-'}<br>บัตร: ${esc(e.cid)||'-'}<br>${pr.map(p=>`<span class="chip">${esc(p)}</span>`).join('')}</div>
- ${screenCard(hs,id)}${chartHtml(hs)}<a class="p" href="#eform/${id}">${ic('pen-to-square','m')}แก้ไข</a><a class="p s" href="#tools">+ ประเมินด้านใดด้านหนึ่ง</a><h2>ประวัติ</h2>${items.map(i=>`<details><summary>${i.h} · ${new Date(i.d).toLocaleDateString('th-TH')}</summary>${i.b||'-'}</details>`).join('')||'<p>ยังไม่มีประวัติ</p>'}`}
+ ${qa(e)}${screenCard(hs,id)}${chartHtml(hs)}<a class="p" href="#eform/${id}">${ic('pen-to-square','m')}แก้ไข</a><a class="p s" href="#tools">+ ประเมินด้านใดด้านหนึ่ง</a><h2>ประวัติ</h2>${items.map(i=>`<details><summary>${i.h} · ${new Date(i.d).toLocaleDateString('th-TH')}</summary>${i.b||'-'}</details>`).join('')||'<p>ยังไม่มีประวัติ</p>'}`}
 async function eform(id){await needE();const e=id!='new'&&ELD.find(x=>x.id==id);M.innerHTML=`<h2>${e?'แก้ไข':'เพิ่ม'}ข้อมูลผู้สูงอายุ</h2><div class="card"><div id="fm"></div><label>พิกัดบ้าน</label><input id="la" placeholder="ละติจูด" value="${e?e.lat:''}"><input id="ln" placeholder="ลองจิจูด" value="${e?e.lng:''}"><button class="p g" id="gp">${ic('location-dot','m')}ใช้ตำแหน่งปัจจุบัน</button><br><button class="p s" id="sv">${ic('floppy-disk','m')}บันทึก</button></div>`;
  const r=mk(EL,e);$('#fm').append(r);$('#gp').onclick=()=>navigator.geolocation.getCurrentPosition(p=>{$('#la').value=p.coords.latitude;$('#ln').value=p.coords.longitude});
  $('#sv').onclick=async()=>{const o=collect(r,EL);if(!o.name)return toast('กรุณากรอกชื่อ');busy(1);try{await ups(o);o.problems=JSON.stringify(o.problems);o.lat=$('#la').value;o.lng=$('#ln').value;if(e)o.id=e.id;const nid=await api('saveElder',{elder:o});await needE(1);toast('บันทึกแล้ว');location.hash='elder/'+nid}catch(x){toast(x.message)}busy(0)}}
