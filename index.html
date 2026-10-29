@@ -35,6 +35,9 @@ nav a{flex:1;text-align:center;padding:8px 0;font-size:11px;color:var(--mut);tex
 .bar{width:min(320px,80vw);height:10px;background:var(--bd);border-radius:6px;overflow:hidden;margin:10px auto}.bar i{display:block;height:100%;width:40%;background:var(--pri);border-radius:6px;animation:mv 1.1s infinite ease-in-out}
 .bar.d i{animation:none;transition:width .4s}@keyframes mv{0%{margin-left:-40%}100%{margin-left:100%}}
 .login{max-width:360px;margin:8vh auto;text-align:center}
+.pin{width:44px;height:44px;border-radius:50%;border:4px solid #9aa7ad;background:#fff;box-shadow:0 2px 6px #0006;overflow:hidden;display:flex;align-items:center;justify-content:center;color:#9aa7ad;font-size:20px}.pin img{width:100%;height:100%;object-fit:cover;display:block}
+.pop{display:flex;gap:8px;align-items:center;min-width:200px}.leaflet-popup-content a.pop{color:var(--tx);text-decoration:none}.leaflet-popup-content a.p{color:#fff;margin:6px 0 0}.ab{display:inline-block;color:#d64545;margin-right:6px;font-size:15px}
+.dot{display:inline-block;width:14px;height:14px;border-radius:50%;border:4px solid;vertical-align:middle;margin-right:4px}.leaflet-container{font-family:var(--font)}
 .tg{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:10px}.tr{display:grid;grid-template-columns:96px 1fr 58px;align-items:center;gap:6px;font-size:12.5px;margin:5px 0}.tb{height:8px;background:var(--bd);border-radius:6px;overflow:hidden}.fl{display:block;height:100%}.sc{float:right;font-size:12px}.login img{height:70px;margin:6px}
 </style></head><body>
 <header id="hd"></header><main id="m"></main><nav id="nv"></nav><div id="pg"><i></i></div><div id="toast"></div><div id="busy"><div id="bt">กำลังบันทึก…</div><div class="bar"><i></i></div><small id="bh"></small></div>
@@ -43,6 +46,10 @@ nav a{flex:1;text-align:center;padding:8px 0;font-size:11px;color:var(--mut);tex
 // Thai text in the code is the source. DICT maps Thai -> [English, Burmese]. Add more rows to translate more labels.
 const LN={th:'ไทย',en:'English',my:'မြန်မာ'};let LANG=localStorage.lang||'th';document.documentElement.lang=LANG;
 const DICT={
+'แผนที่':['Map','မြေပုံ'],'นำทาง':['Navigate','လမ်းညွှန်'],'กลุ่ม':['Group','အုပ်စု'],'ยังไม่มีข้อมูล ADL':['No ADL data yet','ADL ဒေတာမရှိသေး'],'ไม่พบความผิดปกติ':['No abnormal domain','ပုံမှန်မဟုတ်သည့်ဒိုမိန်းမတွေ့ပါ'],'ยังไม่ได้คัดกรอง':['Not screened yet','မစစ်ဆန်းရသေးပါ'],
+'ตำแหน่งบ้านผู้สูงอายุ / นำทาง':['Homes of older persons / navigation','သက်ကြီးရွယ်အိုအိမ်တည်နေရာ / လမ်းညွှန်'],'คนยังไม่มีพิกัดบ้าน (ไม่แสดงบนแผนที่)':['without home coordinates (not shown on the map)','အိမ်တည်နေရာမရှိသူများ (မြေပုံတွင်မပြပါ)'],
+'เส้นขอบ = กลุ่มความสามารถในการทำกิจวัตรประจำวัน (BADL/IADL) · ไอคอนในป๊อปอัป = ด้านที่คัดกรองพบผิดปกติ':['Border = ADL group (BADL/IADL): 1 green, 2 yellow, 3 red · Popup icons = abnormal screening domains','ဘောင်အရောင် = ADL အုပ်စု (BADL/IADL) · ပေါ့ပ်အပ်ရှိ အိုင်ကွန်များ = စစ်ဆန်းရာတွင် ပုံမှန်မဟုတ်သည့်ဒိုမိန်းများ'],
+'โหลดแผนที่ไม่สำเร็จ – ตรวจอินเทอร์เน็ต':['Could not load the map – check your internet connection','မြေပုံမရပါ – အင်တာနက်စစ်ပါ'],
 'แบบคัดกรองผู้สูงอายุในชุมชน':['Community Screening (older persons)','ရပ်ရွာအခြေပြု သက်ကြီးရွယ်အို စစ်ဆန်းခြင်း'],'แบบคัดกรองผู้สูงอายุในชุมชน 9 ด้าน (อสม.)':['9-domain community screening (village health volunteers)','ဒိုမိန်း ၉ ခု ရပ်ရွာစစ်ဆန်းမှု (ကျေးရွာကျန်းမာရေးစေတနာ့ဝန်ထမ်း)'],
 'คัดกรองโดย อสม. หรือครอบครัว หากพบผิดปกติอย่างน้อย 1 ด้านให้ส่งต่อเจ้าหน้าที่สาธารณสุขเพื่อประเมินเชิงลึก':['Screening by village health volunteers or family. If at least 1 domain is abnormal, refer to a health officer for in-depth assessment.','ကျေးရွာကျန်းမာရေးစေတနာ့ဝန်ထမ်း သို့မဟုတ် မိသားစုမှ စစ်ဆန်းပါ။ ဒိုမိန်းတစ်ခုမှ ပုံမှန်မဟုတ်ပါက ကျန်းမာရေးဝန်ထမ်းသို့ လွှဲပို့ပါ။'],
 'ด้านที่พบผิดปกติ':['domain(s) abnormal','ဒိုမိန်း ပုံမှန်မဟုတ်'],'ส่งต่อประเมินเชิงลึก (INHOMESSS)':['Refer for in-depth assessment (INHOMESSS)','အသေးစိတ်အကဲဖြတ်ရန် လွှဲပို့ရန် (INHOMESSS)'],'คัดกรองใหม่':['New screening','စစ်ဆန်းမှုအသစ်'],
@@ -229,6 +236,23 @@ function screenCard(hs,id){const l=hs.assess.filter(a=>a.domain=='CS').sort((a,b
  return`<div class="card"><h4>${ic('clipboard-check','m')}<span>แบบคัดกรองผู้สูงอายุในชุมชน</span></h4>${b}<a class="p g" href="#screen/${id}">${ic('plus','m')}<span>คัดกรองใหม่</span></a></div>`}
 async function screen(id){await needE();M.innerHTML=`<h2>${ic('clipboard-check','m')}<span>แบบคัดกรองผู้สูงอายุในชุมชน</span> (Community Screening)</h2><div class="card"><p><small><span>คัดกรองโดย อสม. หรือครอบครัว หากพบผิดปกติอย่างน้อย 1 ด้านให้ส่งต่อเจ้าหน้าที่สาธารณสุขเพื่อประเมินเชิงลึก</span></small></p><label>ผู้สูงอายุ</label>${eSel(id)}<a class="p g" href="#eform/new">+ เพิ่มผู้สูงอายุรายใหม่</a><div id="fm"></div><button class="p s" id="sv">${ic('floppy-disk','m')}บันทึก</button></div>`;
  const r=mk(SCR);$('#fm').append(r);$('#sv').onclick=async()=>{const e=$('#el').value;if(!e)return toast('กรุณาเลือกผู้สูงอายุ');busy(1);try{await api('saveAssess',{elderId:e,domain:'CS',data:await ups(collect(r,SCR))});toast('บันทึกแล้ว');location.hash='elder/'+e}catch(x){toast(x.message)}busy(0)}}
+/* ===== MAP (Leaflet + OpenStreetMap) ===== */
+// Pin border = ADL group of the latest BADL/IADL (INHOMESSS domain 1): 1 green, 2 yellow, 3 red, grey = no data. Icons in popup = abnormal domains of the latest community screening.
+const GCOL={1:'#2e9e6b',2:'#f2c200',3:'#d64545'};
+function loadLeaflet(){return new Promise((ok,no)=>{if(window.L)return ok();const l=document.createElement('link');l.rel='stylesheet';l.href='https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css';document.head.append(l);
+ const x=document.createElement('script');x.src='https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js';x.onload=ok;x.onerror=()=>no(Error('โหลดแผนที่ไม่สำเร็จ – ตรวจอินเทอร์เน็ต'));document.head.append(x)})}
+const adlGroup=d=>{if(!d)return null;let t=0;for(let i=1;i<=16;i++){if(!d['a'+i])return null;t+=+d['a'+i]}return t<=20?1:t<=35?2:3};
+async function mapPage(){if(window._mp){try{window._mp.remove()}catch(e){}window._mp=null}
+ await needE(1);const[md]=await Promise.all([api('mapData'),loadLeaflet()]);
+ const pts=ELD.map(e=>({e,la:parseFloat(e.lat),ln:parseFloat(e.lng)})).filter(p=>isFinite(p.la)&&isFinite(p.ln)&&(p.la||p.ln)),miss=ELD.length-pts.length;
+ const lg=[1,2,3].map(n=>`<span class="chip"><b class="dot" style="border-color:${GCOL[n]}"></b><span>กลุ่ม</span> ${n}</span>`).join('')+`<span class="chip"><b class="dot" style="border-color:#9aa7ad"></b><span>ยังไม่มีข้อมูล ADL</span></span>`;
+ M.innerHTML=`<h2>${ic('map-location-dot','m')}<span>แผนที่</span> (${pts.length}/${ELD.length})</h2><div class="card" style="padding:8px"><div id="map" style="height:calc(100vh - 270px);min-height:360px;border-radius:12px"></div><div style="margin-top:6px">${lg}<br><small><span>เส้นขอบ = กลุ่มความสามารถในการทำกิจวัตรประจำวัน (BADL/IADL) · ไอคอนในป๊อปอัป = ด้านที่คัดกรองพบผิดปกติ</span></small>${miss?`<br><small>${miss} <span>คนยังไม่มีพิกัดบ้าน (ไม่แสดงบนแผนที่)</span></small>`:''}</div></div>`;
+ const mp=window._mp=L.map('map').setView([16.71,98.57],12);L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap contributors'}).addTo(mp);
+ pts.forEach(({e,la,ln})=>{const m=(md||{})[e.id]||{},gr=adlGroup(m.d1),r=m.cs?scr(m.cs):null,col=gr?GCOL[gr]:'#9aa7ad',
+  ab=r?SCRD.map((d,i)=>r[i]===true?`<span class="ab" title="${d[0]}">${ic(d[1])}</span>`:'').join(''):'',
+  pop=`<a class="pop" href="#elder/${esc(e.id)}"><img class="av" src="${esc(e.photo||'')}" alt=""><div><b>${esc(e.name)}</b><br><small>${age(e.birth)||'?'} ปี${gr?` · <span>กลุ่ม</span> ${gr}`:''}</small><br>${r?(ab||'<small><span>ไม่พบความผิดปกติ</span></small>'):'<small><span>ยังไม่ได้คัดกรอง</span></small>'}</div></a><a class="p s" target="_blank" rel="noopener" href="https://www.google.com/maps/dir/?api=1&destination=${la},${ln}">${ic('location-arrow','m')}<span>นำทาง</span></a>`;
+  L.marker([la,ln],{icon:L.divIcon({className:'',html:`<div class="pin" style="border-color:${col}">${e.photo?`<img src="${esc(e.photo)}" alt="">`:ic('user')}</div>`,iconSize:[44,44],iconAnchor:[22,22],popupAnchor:[0,-24]})}).addTo(mp).bindPopup(pop)});
+ if(pts.length)mp.fitBounds(L.latLngBounds(pts.map(p=>[p.la,p.ln])),{padding:[40,40],maxZoom:15});setTimeout(()=>mp.invalidateSize(),150)}
 /* ===== SPIDER CHART (INHOMESSS) ===== */
 // Each domain score = average of its assessment tools, 0-100 (higher = better / lower risk). Edit SC to change tools or scoring.
 const SHORT={1:'เคลื่อนไหว',2:'โภชนาการ',3:'สภาพบ้าน',4:'คนรอบข้าง',5:'การใช้ยา',6:'ตรวจร่างกาย',7:'ความปลอดภัย',8:'จิตวิญญาณ',9:'บริการ'};
@@ -270,9 +294,9 @@ const eSel=id=>`<select id="el"><option value="">-- เลือกผู้ส�
 const M=$('#m');
 async function go(){const h=(location.hash||'#home').slice(1).split('/'),p=h[0];
  hdr();
- $('#nv').innerHTML=S.token?[['home','house','หน้าแรก'],['visit','house-medical','เยี่ยมบ้าน'],['tools','toolbox','เครื่องมือ'],['elders','person-cane','ผู้สูงอายุ'],['about','circle-info','เกี่ยวกับ']].map(a=>`<a href="#${a[0]}">${ic(a[1],'ic')}<span>${a[2]}</span></a>`).join(''):'';
+ $('#nv').innerHTML=S.token?[['home','house','หน้าแรก'],['visit','house-medical','เยี่ยมบ้าน'],['tools','toolbox','เครื่องมือ'],['elders','person-cane','ผู้สูงอายุ'],['map','map-location-dot','แผนที่'],['about','circle-info','เกี่ยวกับ']].map(a=>`<a href="#${a[0]}">${ic(a[1],'ic')}<span>${a[2]}</span></a>`).join(''):'';
  if(!S.token)return login();
- M.innerHTML='<div class="card"><div class="bar"><i></i></div><p>⏳ กำลังโหลดข้อมูลจาก Google Sheets… (อาจใช้เวลา 5–20 วินาที)</p></div>';try{await({home,visit,tools,screen,tool,elders,elder,eform,about,users}[p]||home)(h[1])}catch(e){M.innerHTML=`<div class="card">${ic('triangle-exclamation','m')}${esc(e.message)}<br><button class="p" onclick="go()">ลองใหม่</button></div>`}}
+ M.innerHTML='<div class="card"><div class="bar"><i></i></div><p>⏳ กำลังโหลดข้อมูลจาก Google Sheets… (อาจใช้เวลา 5–20 วินาที)</p></div>';try{await({home,visit,tools,screen,map:mapPage,tool,elders,elder,eform,about,users}[p]||home)(h[1])}catch(e){M.innerHTML=`<div class="card">${ic('triangle-exclamation','m')}${esc(e.message)}<br><button class="p" onclick="go()">ลองใหม่</button></div>`}}
 function login(mode='in',em=''){
  const lg=`<img src="${img(CFG.COMPANY_LOGO)}"><img src="${img(CFG.PROGRAM_LOGO)}">`,I=(id,ph,ty='text')=>`<input id="${id}" type="${ty}" placeholder="${ph}" autocapitalize="off"><br><br>`,C=h=>M.innerHTML=`<div class="login card">${lg}${h}</div>`;
  if(mode=='up')C(`<h2>สมัครสมาชิก</h2>${I('rn','ชื่อ-สกุล')}${I('re','อีเมล','email')}${I('rp','รหัสผ่าน (อย่างน้อย 8 ตัวอักษร)','password')}${I('rq','ยืนยันรหัสผ่าน','password')}<button class="p" id="b1">สมัครสมาชิก</button><p><a href="#" id="b2">มีบัญชีแล้ว? เข้าสู่ระบบ</a></p>`);
@@ -288,6 +312,7 @@ function home(){M.innerHTML=`<h2>สวัสดี ${esc(S.user.name)}</h2><div
 <a class="tile" href="#visit">${ic('house-medical','ic')}<b>Home Care Visit</b><small>แบบบันทึกการเยี่ยมบ้านผู้สูงอายุ</small></a>
 <a class="tile" href="#screen">${ic('clipboard-check','ic')}<b>Community Screening</b><small>แบบคัดกรองผู้สูงอายุในชุมชน 9 ด้าน (อสม.)</small></a>
 <a class="tile" href="#tools">${ic('toolbox','ic')}<b>INHOMESSS tools</b><small>แบบบันทึกแต่ละด้าน 9 ด้าน</small></a>
+<a class="tile" href="#map">${ic('map-location-dot','ic')}<b>แผนที่</b><small>ตำแหน่งบ้านผู้สูงอายุ / นำทาง</small></a>
 <a class="tile" href="#elders">${ic('person-cane','ic')}<b>ผู้สูงอายุ</b><small>ฐานข้อมูล / ประวัติ</small></a>
 <a class="tile" href="#about"><i>ℹ️</i><b>About</b><small>Adopt A Granny · TaeJai · Buddy HomeCare</small></a>
 ${S.user.role=='admin'?'<a class="tile" href="#users">'+ic('user-gear','ic')+'<b>ผู้ใช้งาน</b><small>จัดการบัญชี</small></a>':''}</div>`}
